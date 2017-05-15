@@ -25,6 +25,7 @@ export default new Router({
       ]
     },
    {path:'/findShip/shipDetail/:shipInfo',name:'shipDetail',component: resolve => require(['@/components/shipDetail'], resolve)},
+   {path:'/findGoods/goodsDetail/',name:'goodsDetail',component: resolve => require(['@/components/goodsDetail'], resolve)},
    {path:'/changeLoginStatus/:loginInfo',name:'changeLoginStatus',component: resolve => require(['@/components/common/changeLoginStatus'], resolve)},
    {path:'/bandPhoneNumber/:loginInfo',name:'bandPhoneNumber',component: resolve => require(['@/components/bandPhoneNumber'], resolve)},
   ]

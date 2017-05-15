@@ -123,7 +123,7 @@
     </div>
     <dir class="contact">
       <!-- <router-link :to="{ name: 'changeLoginStatus', params: { loginInfo: {type:'nomination',to:'gooder'} }}"  tag="div"> -->
-        <span @click="contactGooder" class="linearBtn">
+        <span @click="contactShipper" class="linearBtn">
           <img :src="imgPath+'/tel.png'" class="tel">
           <span>联系该船东</span>
         </span>
@@ -179,7 +179,7 @@ export default {
     
   },
   methods:{
-    contactGooder(){
+    contactShipper(){
       //没登录
       var data={
         type:'nomination',
@@ -314,37 +314,9 @@ export default {
   height: 12em;
   width: 100%;
 }
-.contact{
-  text-align: center;
-  padding:0.5em 0em;
-  position: fixed;
-  bottom: 0em;
-  height: 2.5em;
-  width: 100%;
-  background: white;
-  border-top: 1px #E2E2E2 solid;
-  .linearBtn{
-    display: inline-block;
-    padding-top: 0.5em;
-    text-align: center;
-    .linearToRight(#28d7d5,#3191d8);
-    color: white;
-    height: 2em;
-    width: 90%;
-    vertical-align: middle;
-  }
-  .tel{
-    vertical-align: middle;
-    width: 1.5em;
-    height: 1.5em;
-  }
 
-}
 .placeholder{
   height: 3.5em;
 }
-.greySeparate{
-  height: 0.8em;
-  background-color: @grey
-}
+
 </style>
