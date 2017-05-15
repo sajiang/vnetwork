@@ -1,0 +1,350 @@
+<template>
+  <div class="shipDetail">
+    <div class="header clearfix">
+      <div class="avatar wh25p"><img class="circleImg" :src="imgPath+'/deleteLater.png'"></div>
+      <div class="basicInfo wh50p">
+        <div>
+          <span class="bigName">{{shipInfo.soName}}</span>
+          <span class="darkerGrey">|</span>
+          <span class="bigName">{{shipInfo.cnShipName}}</span>
+          <img v-if="shipInfo.theTrue" class="vip" :src="imgPath+'/vip.png'">
+          <img v-else class="vip" :src="imgPath+'/unvip.png'">
+        </div>
+        <div>{{shipInfo.loadTon}}T</div>
+        <div class="darkerGrey">{{shipInfo.company}}</div>
+      </div>
+      <div class="follow wh25p"><span class="blueBackSpan"><img class="star" :src="imgPath+'/unstar.png'">关注</span></div>
+    </div>
+    <div class="greySeparate"></div>
+    <div class="shipItem">
+      <div class="clearfix pd10">
+        <div>
+          <div>
+            <span class="darkerGrey">7min前发布</span>
+            <span class="fr date">{{shipInfo.loadDate}}</span>
+          </div>
+          <div class="clearfix mgt5">
+            <div class="wh33p">
+              <div class="city">{{shipInfo.startCityName}}</div>
+              <div>{{shipInfo.startPortName}}</div>
+            </div>
+            <div class="wh33p textCenter">
+              <div>{{shipInfo.goodsName}}</div>
+              <div>
+                <img class="arrowRight" :src="imgPath+'/arrowRight.png'">
+              </div>
+            </div>
+            <div class="wh33p textRight">
+              <div class="city">
+                <span class="circle">空</span>
+                <span>{{shipInfo.endCityName}}</span>
+              </div>
+              <div>{{shipInfo.endPortName}}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="navigationInfo clearfix">
+        <div class="wh50p borderLeft mgt10 ">
+          <div class="darkerGrey mgl10 ">目前位置</div>
+          <span class="bigName mgl10">{{shipInfo.positionText}}</span>
+        </div>
+        <div class="wh40p mgt10 ">
+          <div class="darkerGrey mgl10">船速</div>
+          <div class="bigName mgl10">{{shipInfo.speed}}节</div>
+        </div>
+      </div>
+      <div class="progress">
+        
+        <div class="background">
+          <div class="undo" :style="{width:undoLength+'px'}"></div>
+        </div> 
+        <div class="">
+          <img class="shipIcon" :style="{marginLeft:marginLeft+'px'}" :src="imgPath+'/shipIcon.png'">
+        </div> 
+      </div>
+    </div>
+    <div class="greySeparate"></div>
+    <div id="mapContainer" v-show="this.shipInfo.longitude&&this.shipInfo.latitude"></div>
+    <div class="clearfix">
+      <div class="wh50p borderLeft mgt10 ">
+        <div class="darkerGrey mgl10 ">目前抵达港</div>
+        <span class="bigfont mgl10">{{shipInfo.dest_port}}</span>
+      </div>
+      <div class="wh40p mgt10 ">
+        <div class="darkerGrey mgl10">预计抵达时间</div>
+        <div class="bigfont mgl10">{{shipInfo.eta}}</div>
+      </div>
+    </div>
+    <div class="greySeparate"></div>
+    <div>
+      <div class="clearfix">
+        <div class="wh30p borderLeft mgt10 mgb10">
+          <div class="darkerGrey mgl10 ">状态</div>
+          <span class="bigfont mgl10">{{shipInfo.navStatus}}</span>
+        </div>
+        <div class="wh33p borderLeft mgt10 mgb10">
+          <div class="darkerGrey mgl10">船舶呼号</div>
+          <div class="bigfont mgl10">{{shipInfo.mmsi}}</div>
+        </div>
+        <div class="wh30p mgt10 mgb10">
+          <div class="darkerGrey mgl10">仓容</div>
+          <div class="bigfont mgl10">{{shipInfo.shipCapacity}}</div>
+        </div>
+      </div>
+      <div class="subInfo clearfix mgb10">
+        <div class="wh30p borderLeft mgt10 ">
+          <div class="darkerGrey mgl10 ">类型</div>
+          <span class="bigfont mgl10">{{shipInfo.TypeName}}</span>
+        </div>
+        <div class="wh33p borderLeft mgt10 ">
+          <div class="darkerGrey mgl10">船籍港</div>
+          <div class="bigfont mgl10">{{shipInfo.regPort}}</div>
+        </div>
+        <div class="wh30p mgt10 ">
+          <div class="darkerGrey mgl10">建造年份</div>
+          <div class="bigfont mgl10">{{shipInfo.Makedate}}</div>
+        </div>
+      </div>
+      <div class="subInfo clearfix mgb10">
+        <div class="wh30p borderLeft mgt10 ">
+          <div class="darkerGrey mgl10 ">吃水</div>
+          <span class="bigfont mgl10">{{shipInfo.emptyDraft}}</span>
+        </div>
+        <div class="wh33p borderLeft mgt10 ">
+          <div class="darkerGrey mgl10">船宽</div>
+          <div class="bigfont mgl10">{{shipInfo.shipWidth}}米</div>
+        </div>
+        <div class="wh30p mgt10 ">
+          <div class="darkerGrey mgl10">船长</div>
+          <div class="bigfont mgl10">{{shipInfo.shipLong}}米</div>
+        </div>
+      </div>
+    </div>
+    <dir class="contact">
+      <!-- <router-link :to="{ name: 'changeLoginStatus', params: { loginInfo: {type:'nomination',to:'gooder'} }}"  tag="div"> -->
+        <span @click="contactGooder" class="linearBtn">
+          <img :src="imgPath+'/tel.png'" class="tel">
+          <span>联系该船东</span>
+        </span>
+     <!--  </router-link> -->
+    </dir>
+    <div class="greySeparate"></div>
+    <div class="placeholder">
+      
+    </div>
+  </div>
+</template>
+
+<script>
+import AMap from 'AMap';
+import commonData from '@/components/common/commonData';
+export default {
+  name: 'shipDetail',
+  data () {
+    return {
+      imgPath:"../../static/img",
+      marginLeft:"",
+      undoLength:"",
+      shipInfo:{}
+    }
+  },
+  mounted() {
+    this.shipInfo=JSON.parse(this.$route.params.shipInfo);
+    
+    if (this.shipInfo.stage<0) {
+      this.shipInfo.stage=0;
+    }
+    var total=document.getElementsByClassName("progress")[0].offsetWidth;
+    var ship=document.getElementsByClassName("shipIcon")[0].offsetWidth;
+    this.marginLeft= (total-ship)*this.shipInfo.stage/100;
+    this.undoLength= total-(total-ship)*this.shipInfo.stage/100-ship/2;
+    if (this.shipInfo.longitude&&this.shipInfo.latitude) {
+      var map = new AMap.Map('mapContainer', {
+      resizeEnable: true,
+      zoom:5,
+      center: [this.shipInfo.longitude, this.shipInfo.latitude]
+      });
+      var info = [];
+      var curposition=this.shipInfo.positionText?this.shipInfo.positionText:"暂无"
+      info.push("当前所在位置："+curposition);
+      info.push("经度:"+this.shipInfo.longitude);
+      info.push("维度:"+this.shipInfo.latitude);
+
+      var infoWindow = new AMap.InfoWindow({
+         content: info.join("<br>")  //使用默认信息窗体框样式，显示信息内容
+      });
+      infoWindow.open(map, [this.shipInfo.longitude,this.shipInfo.latitude]);
+    }
+    
+  },
+  methods:{
+    contactGooder(){
+      //没登录
+      var data={
+        type:'nomination',
+        to:"gooder",
+        redirect_url:window.location.href
+      }
+      
+      if(commonData.checkLoginStatus(this,data)){
+        //身份是船东
+        //发获取电话的请求
+      }
+    }
+  }
+}
+</script>
+
+<style lang="less" scoped>
+@import "https://webapi.amap.com/theme/v1.3/style1.3.26.1.css";
+@import '../assets/common.less';
+.header{
+  padding: 1em 0.8em;
+  .avatar{
+    text-align: center;
+    img{
+      height: 5em;
+      width: 5em;
+    }
+  }
+  .basicInfo{
+    position: relative;
+    left: 1em;
+    top: 0.5em;
+  }
+  .follow{
+    
+    .blueBackSpan{
+      margin-top: 1em;
+      margin-left: 0em;
+    }
+    .star{
+      width: 1.1em;
+      height: 1.1em;
+      vertical-align: top;
+    }
+  }
+}
+
+.date{
+  color: @blue;
+  font-weight: bold;
+  font-size: 1.2em;
+  vertical-align: middle;
+}
+.city{
+  font-size: 1.2em;
+  vertical-align: middle;
+  margin-bottom: 0.2em;
+}
+.ton{
+  color: @fontGrey;
+  font-size: 1em;
+  vertical-align: middle;
+}
+.vip{
+  width: 1.5em;
+  height: 1.5em;
+  vertical-align: middle;
+}
+.recommend{
+  width: 1.2em;
+  height: 1.2em;
+  vertical-align: middle;
+}
+.arrowRight{
+  width: 6em;
+  vertical-align: top;
+}
+.chosenItem{
+  width: 1.5em;
+  height: 1.5em;
+  vertical-align: middle;
+  margin-top: 1.5em;
+}
+
+.circle{
+  vertical-align: top;
+  display: inline-block;
+  font-size: 0.4em;
+  color: @fontGrey;
+  height: 1.2em;
+  width: 1.2em;
+  border:1px @fontGrey solid;
+  .rounded-corners(0.6em);
+  text-align: center;
+}
+.navigationInfo{
+  margin-top: -0.5em;
+  border-top: 1px #E2E2E2 solid;
+  padding-top: 0.4em;
+  .bigName{
+    font-weight: normal;
+  }
+  
+}
+.subInfo{
+  border-top: 1px #E2E2E2 solid;
+}
+.borderLeft{
+    border-right: 1px #E2E2E2 solid;
+  }
+.progress{
+  position: relative;
+  height: 1em;
+  .shipIcon{
+    width: 2.5em;
+    position:absolute;
+  }
+  .background{
+    height: 0.3em;
+    position: absolute;
+    width: 100%;
+    top: 0.7em;
+    .linearToRight(#28d7d5,#3191d8);
+    .undo{
+      background-color: #E1E1E1;
+      height: 100%;
+      float: right;
+    }
+  }
+}
+#mapContainer{
+  height: 12em;
+  width: 100%;
+}
+.contact{
+  text-align: center;
+  padding:0.5em 0em;
+  position: fixed;
+  bottom: 0em;
+  height: 2.5em;
+  width: 100%;
+  background: white;
+  border-top: 1px #E2E2E2 solid;
+  .linearBtn{
+    display: inline-block;
+    padding-top: 0.5em;
+    text-align: center;
+    .linearToRight(#28d7d5,#3191d8);
+    color: white;
+    height: 2em;
+    width: 90%;
+    vertical-align: middle;
+  }
+  .tel{
+    vertical-align: middle;
+    width: 1.5em;
+    height: 1.5em;
+  }
+
+}
+.placeholder{
+  height: 3.5em;
+}
+.greySeparate{
+  height: 0.8em;
+  background-color: @grey
+}
+</style>

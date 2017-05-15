@@ -1,0 +1,1 @@
+global.imgPath = '../../static/img';
