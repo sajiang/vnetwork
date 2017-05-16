@@ -12,19 +12,30 @@
       <div class="textCenter"><span class="discover"></span></div>
       <div class="navText">发现</div>
     </router-link>
-    <router-link to="/my" class="wh25p">
+    <div class="wh25p" @click="toMy">
       <div class="textCenter"><span class="my"></span></div>
       <div class="navText">我的</div>
-    </router-link>
+    </div>
   </div>
 </template>
 
 <script>
+import commonData from '@/components/common/commonData'
 export default {
   name: 'nav',
   data () {
     return {
       imgPath:"../../static/img",
+    }
+  },
+  methods:{
+    toMy:function(argument) {
+      window.localStorage.pageType='choose';
+      window.localStorage.type=window.localStorage.curType;
+      window.localStorage.wantToGo=window.location.origin+window.location.pathname+"#/my";
+      if(commonData.checkLoginStatus(this)){
+        this.$router.push({ path: '/my'});
+      }
     }
   }
 }

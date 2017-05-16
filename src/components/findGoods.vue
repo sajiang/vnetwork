@@ -51,6 +51,16 @@
 	    	<div>
 	    		<v-goods-item class="mgt5"></v-goods-item>
 	    		<v-goods-item class="mgt5"></v-goods-item>
+	    		<v-goods-item class="mgt5"></v-goods-item>
+	    		<v-goods-item class="mgt5"></v-goods-item>
+	    		<v-goods-item class="mgt5"></v-goods-item>
+	    		<v-goods-item class="mgt5"></v-goods-item>
+	    		<v-goods-item class="mgt5"></v-goods-item>
+	    		<v-goods-item class="mgt5"></v-goods-item>
+
+	    		<v-goods-item class="mgt5"></v-goods-item>
+	    		<v-goods-item class="mgt5"></v-goods-item>
+	    		<v-goods-item class="mgt5"></v-goods-item>
 	    	</div>
 	    </div>
     	<v-shade v-show="shadeShow" @click.native="hideShade()"></v-shade>

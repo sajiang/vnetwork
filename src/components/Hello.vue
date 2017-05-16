@@ -23,7 +23,19 @@ export default {
   },
   components: {
     'v-nav': nav
-  },
+  }
+  /*,
+  created:function(argument) {
+    //判断是不是微信浏览器 
+    var ua = navigator.userAgent.toLowerCase();  
+    if(ua.match(/MicroMessenger/i)=="micromessenger") {  
+      window.location.href="https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx318ae0637e725068&redirect_uri=http%3a%2f%2fwww.92lvyou.net%2findex.html&response_type=code&scope=snsapi_userinfo&state=123#wechat_redirect"
+    } else {  
+      this.$router.push({ path: '/findShip'})
+      return false;  
+    }  
+
+  }*/
   
 }
 </script>

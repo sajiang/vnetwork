@@ -149,45 +149,54 @@ export default {
       shipInfo:{}
     }
   },
-  mounted() {
-    this.shipInfo=JSON.parse(this.$route.params.shipInfo);
-    
-    if (this.shipInfo.stage<0) {
-      this.shipInfo.stage=0;
-    }
-    var total=document.getElementsByClassName("progress")[0].offsetWidth;
-    var ship=document.getElementsByClassName("shipIcon")[0].offsetWidth;
-    this.marginLeft= (total-ship)*this.shipInfo.stage/100;
-    this.undoLength= total-(total-ship)*this.shipInfo.stage/100-ship/2;
-    if (this.shipInfo.longitude&&this.shipInfo.latitude) {
-      var map = new AMap.Map('mapContainer', {
-      resizeEnable: true,
-      zoom:5,
-      center: [this.shipInfo.longitude, this.shipInfo.latitude]
-      });
-      var info = [];
-      var curposition=this.shipInfo.positionText?this.shipInfo.positionText:"暂无"
-      info.push("当前所在位置："+curposition);
-      info.push("经度:"+this.shipInfo.longitude);
-      info.push("维度:"+this.shipInfo.latitude);
-
-      var infoWindow = new AMap.InfoWindow({
-         content: info.join("<br>")  //使用默认信息窗体框样式，显示信息内容
-      });
-      infoWindow.open(map, [this.shipInfo.longitude,this.shipInfo.latitude]);
-    }
-    
+  activated() {
+    window.scrollTo(0,0)
+    this.bandData();
+  },
+  mounted(){
+    window.scrollTo(0,0)
+    this.bandData();
   },
   methods:{
+    bandData(){
+      this.shipInfo=JSON.parse(this.$route.params.shipInfo);
+    
+      if (this.shipInfo.stage<0) {
+        this.shipInfo.stage=0;
+      }
+      var total=document.getElementsByClassName("progress")[0].offsetWidth;
+      var ship=document.getElementsByClassName("shipIcon")[0].offsetWidth;
+      this.marginLeft= (total-ship)*this.shipInfo.stage/100;
+      this.undoLength= total-(total-ship)*this.shipInfo.stage/100-ship/2;
+      if (this.shipInfo.longitude&&this.shipInfo.latitude) {
+        var map = new AMap.Map('mapContainer', {
+        resizeEnable: true,
+        zoom:5,
+        center: [this.shipInfo.longitude, this.shipInfo.latitude]
+        });
+        var info = [];
+        var curposition=this.shipInfo.positionText?this.shipInfo.positionText:"暂无"
+        info.push("当前所在位置："+curposition);
+        info.push("经度:"+this.shipInfo.longitude);
+        info.push("维度:"+this.shipInfo.latitude);
+
+        var infoWindow = new AMap.InfoWindow({
+           content: info.join("<br>")  //使用默认信息窗体框样式，显示信息内容
+        });
+        infoWindow.open(map, [this.shipInfo.longitude,this.shipInfo.latitude]);
+      }
+    },
     contactShipper(){
       //没登录
-      var data={
+      /*var data={
         type:'nomination',
         to:"gooder",
         redirect_url:window.location.href
-      }
-      
-      if(commonData.checkLoginStatus(this,data)){
+      }*/
+      window.localStorage.pageType='nomination';
+      window.localStorage.type='gooder';
+      window.localStorage.wantToGo=window.location.href;
+      if(commonData.checkLoginStatus(this)){
         //身份是船东
         //发获取电话的请求
       }

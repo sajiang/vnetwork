@@ -66,13 +66,11 @@ export default {
   methods:{
     contactGooder(){
       //没登录
-      var data={
-        type:'nomination',
-        to:"shipper",
-        redirect_url:window.location.href
-      }
-      
-      if(commonData.checkLoginStatus(this,data)){
+      window.localStorage.pageType='nomination';
+      window.localStorage.type='shipper';
+      window.localStorage.redirectUrl=window.location.href;
+
+      if(commonData.checkLoginStatus(this)){
         //身份是船东
         //发获取电话的请求
       }

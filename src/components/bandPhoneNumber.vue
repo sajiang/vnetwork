@@ -30,8 +30,8 @@ export default {
 		}
 	},
 	created(){
-		this.type=this.$route.params.loginInfo.to=="goods"?2:1;
-		this.redictUrl=this.$route.params.loginInfo.redirect_url;
+		this.type=window.localStorage.type=="goods"?2:1;
+		/*this.redictUrl=JSON.parse(this.$route.params.loginInfo).redirect_url;*/
 	},
 	methods:{
 		getMobileCode(){
@@ -51,25 +51,58 @@ export default {
 			});
 	    },
 	    checkCode(){
-	    	var userType=this.type=="gooder"?2:1;
-			var postData={
-				Mobile:this.telphone,
-				userType,
-				msgId:this.msgId,
-				code:this.code
+	    	var wxcode=this.getUrlParam("code");
+	    	//如果有微信授权
+	    	if (wxcode) {
+	    		var userType=this.type=="gooder"?2:1;
+				var postData={
+					Mobile:this.telphone,
+					userType,
+					msgId:this.msgId,
+					vCode:this.code,
+					code:wxcode
+				}
+				var _this=this;
+				this.$http.post(commonData.url+'userInfo/exeBindUser', postData)
+		      	.then(function (response) {
+		      		if(response.data.RetCode==0){
+		      			this.$store.isLogin=1;
+		      			_this.$router.go(-2);
+		      		}
+				});
+	    	}else{
+	    		var userType=this.type=="gooder"?2:1;
+				var postData={
+					Mobile:this.telphone,
+					userType,
+					msgId:this.msgId,
+					code:this.code
+				}
+				var _this=this;
+				this.$http.post(commonData.url+'userInfo/userLoginByMobile', postData)
+		      	.then(function (response) {
+		      		if(response.data.RetCode==0){
+		      			/*commonData.setCookie("micoLogKey",response.data.RetData.micoLogKey);
+		      			commonData.setCookie("userType",response.data.RetData.userType);*/
+		      			//console.log(commonData.getCookie("micoLogKey"));
+		      			/*window.location.href=_this.redictUrl;*/
+		      			this.$store.state.isLogin=1;
+		      			_this.$router.go(-2);
+		      		}
+				});
+	    	}
+	    	
+	    },
+	    getUrlParam(name) {  
+			var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
+			var r = window.location.search.substr(1).match(reg);  //匹配目标参数
+			if (r != null) {
+			   return unescape(r[2]);  //返回参数值
+			} else {
+			   return null; 
 			}
-			var _this=this;
-			this.$http.post(commonData.url+'userInfo/userLoginByMobile', postData)
-	      	.then(function (response) {
-	      		if(response.data.RetCode==0){
-	      			commonData.setCookie("micoLogKey",response.data.RetData.micoLogKey);
-	      			commonData.setCookie("userType",response.data.RetData.userType);
-	      			console.log(commonData.getCookie("micoLogKey"));
-	      			/*window.location.href=_this.redictUrl;*/
-	      			_this.$router.go(-2);
-	      		}
-			});
-	    }
+		}
+
 	}
 }
 </script>
@@ -83,7 +116,7 @@ export default {
 .telInput{
 	display: inline-block;
 	padding-left: 2em;
-	width: 18em;
+	width: 90%;
 	background-image: url(../../static/img/search.png);
 	background-repeat :no-repeat;
 	background-size: 1.1em 1.1em;
@@ -96,7 +129,7 @@ export default {
 .codeInput{
 	display: inline-block;
 	padding-left: 2em;
-	width: 18em;
+	width: 90%;
 	background-image: url(../../static/img/search.png);
 	background-repeat :no-repeat;
 	background-size: 1.1em 1.1em;
@@ -126,7 +159,7 @@ export default {
 	display: inline-block;
 	.linearToRight(#28d7d5,#3191d8);
 	color: white;
-	width: 18.5em;
+	width: 90%;
 	padding: 1em;
 }
 </style>

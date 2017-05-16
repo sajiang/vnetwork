@@ -16,17 +16,27 @@ export default new Router({
       path: '/',
       name: 'Hello',
       component: Hello,
-      redirect:  '/findShip' ,
+      redirect: '/findShip',
       children:[
-      	{path:'/findShip',component: findShip},
+      	{ path:'/findShip',component: findShip,
+          /*beforeRouteLeave (to, from, next) {
+            debugger
+            from.$store.scrollTop=window.pageYOffset;
+          }*/
+        },
       	{path:'/findGoods',component: findGoods},
       	{path:'/discover',component: discover},
       	{path:'/my',component: my},
       ]
     },
-   {path:'/findShip/shipDetail/:shipInfo',name:'shipDetail',component: resolve => require(['@/components/shipDetail'], resolve)},
+    {
+      path:'/findShip/shipDetail/:shipInfo',
+      name:'shipDetail',component: resolve => require(['@/components/shipDetail'], resolve),
+
+    },
    {path:'/findGoods/goodsDetail/',name:'goodsDetail',component: resolve => require(['@/components/goodsDetail'], resolve)},
-   {path:'/changeLoginStatus/:loginInfo',name:'changeLoginStatus',component: resolve => require(['@/components/common/changeLoginStatus'], resolve)},
-   {path:'/bandPhoneNumber/:loginInfo',name:'bandPhoneNumber',component: resolve => require(['@/components/bandPhoneNumber'], resolve)},
+   {path:'/changeLoginStatus',name:'changeLoginStatus',component: resolve => require(['@/components/common/changeLoginStatus'], resolve)},
+   {path:'/bandPhoneNumber',name:'bandPhoneNumber',component: resolve => require(['@/components/bandPhoneNumber'], resolve)},
+   {path:'/dispatch',name:'dispatch',component: resolve => require(['@/components/dispatch'], resolve)},
   ]
 })

@@ -12,17 +12,27 @@ function getCookie(name)
     var arr,reg=new RegExp("(^| )"+name+"=([^;]*)(;|$)");
  
     if(arr=document.cookie.match(reg))
- 
         return unescape(arr[2]); 
     else 
         return null; 
 } 
-function checkLoginStatus(_this,data){
-	if(getCookie("micoLogKey")){
+function checkLoginStatus(_this){
+	/*if(getCookie("micoLogKey")){
 		return true;
 	}else{
-		_this.$router.push({ name: 'changeLoginStatus', params: {loginInfo:data}})
-	}
+		_this.$router.push({ name: 'changeLoginStatus'})
+	}*/
+debugger
+  if (_this.$store.state.isLogin==1 && window.localStorage.curType==window.localStorage.type) {
+    //状态为登录并且不用更改身份
+    return true;
+  }else if (_this.$store.isLogin==1) {
+    //状态为登录但是需要更改身份
+    _this.$router.push({ name: 'changeLoginStatus'});
+  }else{
+    //没登录,跳改变身份页面
+      _this.$router.push({ name: 'changeLoginStatus'});
+  }
 }
 export default
 {

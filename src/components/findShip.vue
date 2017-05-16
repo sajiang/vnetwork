@@ -198,6 +198,9 @@ export default {
       return count;
     }
   },
+ /* activated(){
+    window.pageYOffset=this.$store.scrollTop;
+  },*/
   methods:{
     lazyLoading(event){
       this.lazyLoadingCount++;
