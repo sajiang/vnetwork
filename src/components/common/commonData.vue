@@ -22,11 +22,13 @@ function checkLoginStatus(_this){
 	}else{
 		_this.$router.push({ name: 'changeLoginStatus'})
 	}*/
-debugger
-  if (_this.$store.state.isLogin==1 && window.localStorage.curType==window.localStorage.type) {
+  if (!_this) {
+    _this=window._this;
+  }
+  if (sessionStorage.getItem("isLogin")==1 && window.localStorage.curType==window.localStorage.type) {
     //状态为登录并且不用更改身份
     return true;
-  }else if (_this.$store.isLogin==1) {
+  }else if (sessionStorage.getItem("isLogin")==1) {
     //状态为登录但是需要更改身份
     _this.$router.push({ name: 'changeLoginStatus'});
   }else{

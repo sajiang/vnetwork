@@ -10,12 +10,12 @@
     </router-link>
     <router-link to="/discover" class="wh25p">
       <div class="textCenter"><span class="discover"></span></div>
-      <div class="navText">发现</div>
+      <div class="navText">服务</div>
     </router-link>
-    <div class="wh25p" @click="toMy">
+    <router-link to="/my" class="wh25p toMy">
       <div class="textCenter"><span class="my"></span></div>
       <div class="navText">我的</div>
-    </div>
+    </router-link>
   </div>
 </template>
 
@@ -28,10 +28,15 @@ export default {
       imgPath:"../../static/img",
     }
   },
+  created(){
+    window._this=this;
+  },
   methods:{
     toMy:function(argument) {
       window.localStorage.pageType='choose';
-      window.localStorage.type=window.localStorage.curType;
+      if (window.localStorage.curType) {
+        window.localStorage.type=window.localStorage.curType;
+      }
       window.localStorage.wantToGo=window.location.origin+window.location.pathname+"#/my";
       if(commonData.checkLoginStatus(this)){
         this.$router.push({ path: '/my'});
@@ -45,6 +50,7 @@ export default {
 @import '../assets/common.less';
 @imgPath:"../../static/img";
 .nav{
+  padding-top: 0.5em;
   background-color: white;
 }
 .icon{

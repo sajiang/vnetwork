@@ -17,7 +17,7 @@
 				<div class="ship">船东</div>
 			</div>
 		</div>
-		<div class="choose clearfix textCenter" v-else="loginInfo.pageType=='choose'">
+		<div class="choose clearfix textCenter" v-else-if="loginInfo.pageType=='choose'">
 			<div class="inlineBlock">
 				<div>
 					<img :class="gooderBig?'bigAvatar':'avatar'" :src="gooderBig?imgPath+'/gooder.png':imgPath+'/ungooder.png'" @click="changeType('gooder')">
@@ -40,6 +40,7 @@
 </template>
 
 <script>
+import commonData from '@/components/common/commonData'
 export default {
 	name: 'changeLoginStatus',
 	data () {
@@ -64,8 +65,31 @@ export default {
 	},
 	methods:{
 		bandPhoneNumber(){
-			if (this.$store.isLogin==1) {
+			if (this.loginInfo.pageType=="choose") {
+				if (this.gooderBig) {
+					window.localStorage.type="gooder";
+					window.localStorage.curType="gooder";
+				}else{
+					window.localStorage.type="shipper";
+					window.localStorage.curType="shipper";
+				}
+			}
+			if (sessionStorage.getItem("isLogin")==1) {
 				//更换身份
+				var _this=this;
+				this.$http.post(commonData.url+'/userInfo/switchIdentity')
+		      	.then(function (response) {
+					if (response.data.RetCode==0) {
+						//_this.$store.state.isLogin=1;
+						sessionStorage.setItem("isLogin",1);
+						sessionStorage.setItem("userId",response.data.RetData.userId);
+			      		sessionStorage.setItem("userInfoName",response.data.RetData.userInfoName);
+			      		sessionStorage.setItem("userType",response.data.RetData.userType);
+			      		window.localStorage.curType=response.data.RetData.userType==1?"shipper":"gooder";
+						//window.location.href=window.localStorage.wantToGo;
+						_this.$router.go(-1);						
+					}
+				});
 			}else{
 				//没登录，跳授权页
 				var ua = navigator.userAgent.toLowerCase();  
@@ -75,14 +99,14 @@ export default {
 				}else
 				{  //没登录并且是普通浏览器跳绑定登录页面
 			      	this.$router.push({ name: 'bandPhoneNumber'});
-			    } 
+			    }
 			}
 			
 		},
 		changeType(type){
 			if (type=="gooder") {
 				this.gooderBig=true;
-				this.shipperBig=false
+				this.shipperBig=false;
 			}else{
 				this.gooderBig=false;
 				this.shipperBig=true;

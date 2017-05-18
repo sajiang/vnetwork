@@ -4,18 +4,20 @@
     	<div class="box mgr10">
     		<div class="shipFixPosition">
     			<span class="smallLine"></span>
+                <img class="img" :src="imgPath+'/shipFixImg.png'">
     			<span class="text">船舶定位</span>
     		</div>
     	</div>
     	<div class="box mgl10">
     		<div class="queryPort">
     			<span class="smallLine"></span>
+                <img class="img" :src="imgPath+'/queryPortImg.png'">
     			<span class="text">港口直查</span>
     		</div>
     	</div>
     	
     </div>
-    <div class="banner">
+    <router-link class="banner clearfix" to="/discover/loadPrice" tag="div">
     	<div class="wh70p">
     		<div class="mgt10">
     			<span class="title">秦皇岛-江阴</span>
@@ -29,6 +31,35 @@
     	<div class="wh30p">
     		<img class="pic" :src="imgPath+'/loadPrice.png'">
     	</div>
+    </router-link>
+    <div class="banner clearfix" @click="laterOpen">
+        <div class="wh70p">
+            <div class="mgt10">
+                <span class="blue title">加油点</span>
+                <span class="title">直查</span>
+            </div>
+            <div class="mgt10">
+                <span class="darkerGrey subTitle">点击查看更多加油点</span>
+            </div>
+        </div>
+        <div class="wh30p">
+            <img class="pic" :src="imgPath+'/fillUpOil.png'">
+        </div>
+    </div>
+    <div class="banner clearfix" @click="laterOpen">
+        <div class="wh70p">
+            <div class="mgt10">
+                <span class="fontBold">我来给你</span>
+                <span class="blue title">垫运费</span>
+                <span class="orange title">垫油款</span>
+            </div>
+            <div class="mgt10">
+                <span class="darkerGrey subTitle">成本低廉，操作灵活</span>
+            </div>
+        </div>
+        <div class="wh30p">
+            <img class="pic" :src="imgPath+'/spot.png'">
+        </div>
     </div>
   </div>
 </template>
@@ -39,6 +70,11 @@ export default {
   data () {
     return {
       imgPath:"../../static/img",
+    }
+  },
+  methods:{
+    laterOpen(){
+        alert("功能尚未开放，敬请期待")
     }
   }
 }
@@ -61,16 +97,38 @@ export default {
 	.smallLine{
 		display: inline-block;
 		width: 0.2em;
-		background-color: #3689C5;
 		height: 1.7em;
+        vertical-align: middle;
 	}
 	.text{
-		.linearToRight(#28d7d5,#3191d8);
 		color: transparent;
 	    -webkit-background-clip: text;
 	    font-weight: bolder;
 	    font-size: 1.7em;
+        vertical-align: middle;
 	}
+    .img{
+        height: 2.5em;
+        vertical-align: middle;
+        position: relative;
+        left: 0.2em;
+    }
+}
+.shipFixPosition{
+    .smallLine{
+        background-color: #3689C5;
+    }
+    .text{
+        .linearToRight(#28d7d5,#3191d8);
+    }
+}
+.queryPort{
+    .smallLine{
+        background-color: #ED745C;
+    }
+    .text{
+        .linearToRight(#ED745C,#3588C7);
+    }
 }
 .banner{
 	margin-top: 1em;
@@ -79,7 +137,7 @@ export default {
 	padding: 1em;
 	.rounded-corners(0.4em);
 	.title{
-		font-size: 1.6em;
+		font-size: 1.5em;
 		font-weight: bolder;
 	}
 	.subTitle{

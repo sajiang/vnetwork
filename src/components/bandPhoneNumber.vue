@@ -30,12 +30,12 @@ export default {
 		}
 	},
 	created(){
-		this.type=window.localStorage.type=="goods"?2:1;
+		this.type=window.localStorage.type=="gooder"?2:1;
 		/*this.redictUrl=JSON.parse(this.$route.params.loginInfo).redirect_url;*/
 	},
 	methods:{
 		getMobileCode(){
-			var userType=this.type=="gooder"?2:1;
+			var userType=this.type;
 			var postData={
 				Mobile:this.telphone,
 				userType,
@@ -54,7 +54,7 @@ export default {
 	    	var wxcode=this.getUrlParam("code");
 	    	//如果有微信授权
 	    	if (wxcode) {
-	    		var userType=this.type=="gooder"?2:1;
+	    		var userType=this.type;
 				var postData={
 					Mobile:this.telphone,
 					userType,
@@ -66,12 +66,17 @@ export default {
 				this.$http.post(commonData.url+'userInfo/exeBindUser', postData)
 		      	.then(function (response) {
 		      		if(response.data.RetCode==0){
-		      			this.$store.isLogin=1;
+		      			sessionStorage.setItem("isLogin",1);
+		      			//_this.$store.isLogin=1;
+		      			sessionStorage.setItem("userId",response.data.RetData.userId);
+		      			sessionStorage.setItem("userInfoName",response.data.RetData.userInfoName);
+		      			sessionStorage.setItem("userType",response.data.RetData.userType);
+		      			window.localStorage.curType=response.data.RetData.userType==1?"shipper":"gooder";
 		      			_this.$router.go(-2);
 		      		}
 				});
 	    	}else{
-	    		var userType=this.type=="gooder"?2:1;
+	    		var userType=this.type;
 				var postData={
 					Mobile:this.telphone,
 					userType,
@@ -82,12 +87,14 @@ export default {
 				this.$http.post(commonData.url+'userInfo/userLoginByMobile', postData)
 		      	.then(function (response) {
 		      		if(response.data.RetCode==0){
-		      			/*commonData.setCookie("micoLogKey",response.data.RetData.micoLogKey);
-		      			commonData.setCookie("userType",response.data.RetData.userType);*/
-		      			//console.log(commonData.getCookie("micoLogKey"));
-		      			/*window.location.href=_this.redictUrl;*/
-		      			this.$store.state.isLogin=1;
+		      			sessionStorage.setItem("isLogin",1);
+		      			sessionStorage.setItem("userId",response.data.RetData.userId);
+		      			sessionStorage.setItem("userInfoName",response.data.RetData.userInfoName);
+		      			sessionStorage.setItem("userType",response.data.RetData.userType);
+		      			window.localStorage.curType=response.data.RetData.userType==1?"shipper":"gooder";
 		      			_this.$router.go(-2);
+		      		}else{
+		      			alert(response.data.RetMsg);
 		      		}
 				});
 	    	}

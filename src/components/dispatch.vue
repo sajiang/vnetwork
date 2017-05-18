@@ -21,13 +21,17 @@ export default {
 		this.$http.post(commonData.url+'userInfo/isBindUser', postData)
       	.then(function (response) {
 			if (response.data.RetCode==0) {
+				debugger
 				if(response.data.RetData.isBind==1){
-					debugger
-					_this.$store.state.isLogin=1;
+					//_this.$store.state.isLogin=1;
+					sessionStorage.setItem("isLogin",1);
+					sessionStorage.setItem("userId",response.data.RetData.userId);
+		      		sessionStorage.setItem("userInfoName",response.data.RetData.userInfoName);
+		      		sessionStorage.setItem("userType",response.data.RetData.userType);
 					//window.location.href=window.localStorage.wantToGo;
 					_this.$router.go(-2);
 				}else{
-					this.$router.push({ name: 'bandPhoneNumber'});
+					_this.$router.push({ name: 'bandPhoneNumber'});
 				}
 			}
 		});

@@ -139,7 +139,7 @@ export default {
       curRequestType:2,
       pageIndex:1,
       lazyLoadingCount:0,//不那么频繁触发touchmove的滚动
-      curTotalPage:5, //当前搜索条件下，总页数
+      curTotalPage:1, //当前搜索条件下，总页数
       portList:[],
       seaAreaList:[],
       tonageAreaList:[],

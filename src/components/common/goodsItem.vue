@@ -1,32 +1,32 @@
 <template>
-	<router-link :to="{ name: 'goodsDetail'}"  tag="div">
+	<router-link :to="{ name: 'goodsDetail',params: { goodsInfo: JSON.stringify(item) }}"  tag="div">
 		<div class="shipItem pd10">
 			<div class="clearfix ">
 				<div class="clearfix mgt5">
 					<div class="wh33p">
-						<div class="city">{{"福州"}}</div>
-						<div>{{"闽江口"}}</div>
+						<div class="city">{{item.startParentPort}}</div>
+						<div>{{item.startPort}}</div>
 					</div>
 					<div class="wh33p textCenter">
-						<div>{{"沙河"}}</div>
+						<div>{{item.goodsName}}</div>
 						<div>
 							<img class="arrowRight" :src="imgPath+'/arrowRight.png'">
 						</div>
-						<div>{{"5000±500"}}</div>
+						<div>{{item.cargoVolume+"±"+item.addVolume}}</div>
 					</div>
 					<div class="wh33p textRight">
 						<div class="city">
-							<span>{{"北海"}}</span>
+							<span>{{item.endParentPort}}</span>
 						</div>
-						<div>{{"铁山港"}}</div>
+						<div>{{item.endPort}}</div>
 					</div>
 				</div>
 			</div>
 			<div class="bottom clearfix">
-				<span class="date">{{"12-09±3"}}</span>
+				<span class="date">{{item.loadDate?item.loadDate.substr(5):""}}{{"±"+item.loadAddDay}}</span>
 				<span class="darkerGrey">受载</span>
-				<span class="fr darkerGrey">{{"元/吨"+"含税"}}</span>
-				<span class="fr money">{{"¥15"}}</span>
+				<span class="fr darkerGrey">{{item.dr_unit?"元/天":"元/吨/天"}}{{item.Tax?"含税":"不含税"}}</span>
+				<span class="fr money">{{"¥"+item.price}}</span>
 			</div>
 		</div>
 	</router-link>

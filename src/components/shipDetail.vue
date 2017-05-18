@@ -13,7 +13,12 @@
         <div>{{shipInfo.loadTon}}T</div>
         <div class="darkerGrey">{{shipInfo.company}}</div>
       </div>
-      <div class="follow wh25p"><span class="blueBackSpan"><img class="star" :src="imgPath+'/unstar.png'">关注</span></div>
+      <div class="follow wh25p">
+        <span class="blueBackSpan" @click="followShip">
+          <img class="star" :src="isFollow?imgPath+'/star.png':imgPath+'/unstar.png'">
+          {{isFollow?'已关注':'关注'}}
+        </span>
+      </div>
     </div>
     <div class="greySeparate"></div>
     <div class="shipItem">
@@ -146,16 +151,19 @@ export default {
       imgPath:"../../static/img",
       marginLeft:"",
       undoLength:"",
-      shipInfo:{}
+      shipInfo:{},
+      isFollow:false,
     }
   },
   activated() {
     window.scrollTo(0,0)
     this.bandData();
+    this.getFollowState();
   },
   mounted(){
     window.scrollTo(0,0)
     this.bandData();
+    this.getFollowState();
   },
   methods:{
     bandData(){
@@ -170,9 +178,9 @@ export default {
       this.undoLength= total-(total-ship)*this.shipInfo.stage/100-ship/2;
       if (this.shipInfo.longitude&&this.shipInfo.latitude) {
         var map = new AMap.Map('mapContainer', {
-        resizeEnable: true,
-        zoom:5,
-        center: [this.shipInfo.longitude, this.shipInfo.latitude]
+          resizeEnable: true,
+          zoom:5,
+          center: [this.shipInfo.longitude, this.shipInfo.latitude]
         });
         var info = [];
         var curposition=this.shipInfo.positionText?this.shipInfo.positionText:"暂无"
@@ -186,13 +194,41 @@ export default {
         infoWindow.open(map, [this.shipInfo.longitude,this.shipInfo.latitude]);
       }
     },
+    getFollowState(){
+      var postData={shipListId:this.shipInfo.shipListId};
+      var _this=this;
+      this.$http.post(commonData.url+'ship/readFollowState',postData)
+      .then(function (response) {
+        if (response.data.RetCode==0) {
+          //未关注
+          if (response.data.RetData.followId==0) {
+            _this.isFollow=false;
+          }else{
+            _this.isFollow=true;
+          }
+        }
+      });
+    },
+    followShip(){
+      window.localStorage.pageType='nomination';
+      window.localStorage.type='gooder';
+      window.localStorage.wantToGo=window.location.href;
+      if(commonData.checkLoginStatus(this)){
+        var _this=this;
+        var postData={
+          shipId:this.shipInfo.shipId,
+          type:this.isFollow?2:1   //关注的话就取消关注，没关注就关注
+        };
+        this.$http.post(commonData.url+'ship/exeShipAttention',postData)
+        .then(function (response) {
+          if (response.data.RetCode==0) {
+            _this.isFollow=!_this.isFollow;
+          }
+        });
+      }
+    },
     contactShipper(){
       //没登录
-      /*var data={
-        type:'nomination',
-        to:"gooder",
-        redirect_url:window.location.href
-      }*/
       window.localStorage.pageType='nomination';
       window.localStorage.type='gooder';
       window.localStorage.wantToGo=window.location.href;

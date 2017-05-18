@@ -21,7 +21,7 @@
 		    	<div class="weightRange pd10" v-show="searchOption.weightRange.show">
 					<div>
 						<div @click="replaceWeightRange(-1)" :class="-1==searchOption.weightRange.curIndex?'blue':''">全部</div>
-						<!-- <div class="mgt10" v-for="(range,index) in tonageAreaList" :class="index==searchOption.weightRange.curIndex?'blue':''" @click="replaceWeightRange(index)">{{range.theStartVal}}吨-{{range.theEndVal}}吨</div> -->
+						<div class="mgt10" v-for="(range,index) in tonageAreaList" :class="index==searchOption.weightRange.curIndex?'blue':''" @click="replaceWeightRange(index)">{{range.theStartVal}}吨-{{range.theEndVal}}吨</div>
 					</div>
 					<div class="mgt10">
 						<input class="rangeInput" v-model="searchOption.weightRange.theStartVal" type="number" placeholder="输入最低区间">
@@ -47,20 +47,9 @@
 		    </div>
 	    </div>
 	    
-	    <div class="goodsList pd5">
-	    	<div>
-	    		<v-goods-item class="mgt5"></v-goods-item>
-	    		<v-goods-item class="mgt5"></v-goods-item>
-	    		<v-goods-item class="mgt5"></v-goods-item>
-	    		<v-goods-item class="mgt5"></v-goods-item>
-	    		<v-goods-item class="mgt5"></v-goods-item>
-	    		<v-goods-item class="mgt5"></v-goods-item>
-	    		<v-goods-item class="mgt5"></v-goods-item>
-	    		<v-goods-item class="mgt5"></v-goods-item>
-
-	    		<v-goods-item class="mgt5"></v-goods-item>
-	    		<v-goods-item class="mgt5"></v-goods-item>
-	    		<v-goods-item class="mgt5"></v-goods-item>
+	    <div class="goodsList pd5 mgb30"  @touchmove="lazyLoading($event)">
+	    	<div v-for="(item,index) in goodsList" class="goodsItem">
+	    		<v-goods-item class="mgt5" :item="item"></v-goods-item>
 	    	</div>
 	    </div>
     	<v-shade v-show="shadeShow" @click.native="hideShade()"></v-shade>
@@ -107,7 +96,12 @@ export default {
 			        show:false,
 		        },
 		    },
+		    goodsList:[],
 		    portList:[],
+		    tonageAreaList:[],
+		    lazyLoadingCount:0,//不那么频繁触发touchmove的滚动
+      		curTotalPage:1,
+      		pageIndex:1,
 		}
 	},
 	components: {
@@ -121,33 +115,104 @@ export default {
     	.then(function (response) {
     		var data=response.data.RetData;
 
-		var newData=data;
-		newData.unshift({proviceName:"全部",proviceId:"0",selected:true,citys:[]});
-		for (var i = data.length - 1; i >= 0; i--) {
-			newData[i].selected=false;
-		}
+			var newData=data;
+			newData.unshift({proviceName:"全部",proviceId:"0",selected:true,citys:[]});
+			for (var i = data.length - 1; i >= 0; i--) {
+				newData[i].selected=false;
+			}
 
-		for(var i = data.length - 1; i >= 0; i--) {
-			newData[i].citys.unshift({cityName:"全部",cityId:"0",ports:[]});
-			for (var j=data[i].citys.length - 1; j >= 0; j--) {
-			  newData[i].citys[j].selected=false;
+			for(var i = data.length - 1; i >= 0; i--) {
+				newData[i].citys.unshift({cityName:"全部",cityId:"0",ports:[]});
+				for (var j=data[i].citys.length - 1; j >= 0; j--) {
+				  newData[i].citys[j].selected=false;
+				}
 			}
-		}
-		for(var i = data.length - 1; i >= 0; i--) {
-			for (var j=data[i].citys.length - 1; j >= 0; j--) {
-				newData[i].citys[j].ports.unshift({portName:"全部",portId:"0"});
-				for(var k=data[i].citys[j].ports.length - 1; k >= 0; k--){
-			    	newData[i].citys[j].ports[k].selected=false;
-			  	}
+			for(var i = data.length - 1; i >= 0; i--) {
+				for (var j=data[i].citys.length - 1; j >= 0; j--) {
+					newData[i].citys[j].ports.unshift({portName:"全部",portId:"0"});
+					for(var k=data[i].citys[j].ports.length - 1; k >= 0; k--){
+				    	newData[i].citys[j].ports[k].selected=false;
+				  	}
+				}
 			}
-		}
-		_this.portList=newData;
+			_this.portList=newData;
     	})
     	.catch(function (error) {
 	    	console.log(error);
 	    });
+	    this.$http.get(commonData.url+'Common/readTondAreaList')
+    	.then(function (response) {
+    		_this.tonageAreaList=response.data.RetData;
+    	}).catch(function (error) {
+	    	console.log(error);
+	    });
+	    this.getGoodsList();
   	},
 	methods:{
+		lazyLoading(event){
+	    	this.lazyLoadingCount++;
+	      	if (this.lazyLoadingCount==10) {
+		        var totalHeight=document.getElementsByClassName("goodsList")[0].scrollHeight;
+		        var itemHeight=document.getElementsByClassName("goodsItem")[0].scrollHeight;
+		        var scrollHeight=window.pageYOffset;
+		        var screenHeight=window.screen.availHeight;
+	        	if (totalHeight-scrollHeight-screenHeight-itemHeight<0) {
+	          		if(++this.pageIndex<=this.curTotalPage){
+	            		this.getGoodsList(this.pageIndex);
+	         		}else{
+	           			alert("没有更多数据啦");
+	          		}
+	        	}
+	        	this.lazyLoadingCount=0;
+	      	}
+	    },
+	    getGoodsList(pageIndex){
+			
+			if (this.searchOption.weightRange.showstr=="货量区间"||this.searchOption.weightRange.showstr=="全部") {
+				var minTong=0,maxTong=0;
+			}else{
+				var arr=this.searchOption.weightRange.showstr.split("-");
+				var minTong=arr[0];
+				var maxTong=arr.length>0?arr[1]:0;
+			}
+	      
+
+	      	var startPortId=this.searchOption.loadGoodsPort.loadPortId;
+	      	var startPortType=this.searchOption.loadGoodsPort.loadPortType;
+
+	      	var endPortId=this.searchOption.unloadGoodsPort.loadPortId;
+	      	var endPortType=this.searchOption.unloadGoodsPort.loadPortType;
+
+	     	var minLoadDate=this.searchOption.loadGoodsDate.startDate;
+	     	var maxLoadDate=this.searchOption.loadGoodsDate.endDate;
+	      	var pageIndex=pageIndex?pageIndex:1;
+	      	var postData={
+		        Page: pageIndex,
+		        PageSize: 10,
+		        startPortId,
+		        startPortType,
+		        endPortId,
+		        endPortType,//0 港口 1 市 2 省份
+		        minTong,
+		        maxTong,
+		        minLoadDate,
+		        maxLoadDate
+	      	};
+	      	var _this=this;
+	      	this.$http.post(commonData.url+'goods/readGoodsList', postData)
+	      	.then(function (response) {
+	        	_this.curTotalPage=response.data.TotalPage;
+	        	if (pageIndex==1) { //只要不是拖动，就覆盖掉之前的值
+	          		_this.goodsList=response.data.RetData;
+	        	}else{
+	          		_this.goodsList=_this.goodsList.concat(response.data.RetData);
+	        	}
+	      	})
+	      	.catch(function (error) {
+	        	console.log(error);
+	      	});
+	    },
+
 		showSearchOption(name) {
       		//如果点击部分已经选中
 	    	if (this.searchOption[name].show) {
@@ -194,7 +259,7 @@ export default {
 				this.searchOption.loadGoodsPort.loadPortType=2;
 			}
 			this.searchOption.loadGoodsPort.showstr=replaceStr;
-			//this.getShipList(2);
+			this.getGoodsList();
 		},
 		replacePort2(portInfo){
 			this.hideShade();
@@ -218,9 +283,30 @@ export default {
 				this.searchOption.unloadGoodsPort.loadPortType=2;
 			}
 			this.searchOption.unloadGoodsPort.showstr=replaceStr;
-			//this.getShipList(2);
+			this.getGoodsList();
 		},
+		replaceWeightRange(index){
+	      this.hideShade();
+	      if (index!=undefined) {
+	        if(index>-1){
+	          this.searchOption.weightRange.showstr=this.tonageAreaList[index].theStartVal+"-"+this.tonageAreaList[index].theEndVal;
+	        }else{
+	          this.searchOption.weightRange.showstr="全部";
+	        }
+	        this.searchOption.weightRange.curIndex=index;
+	        //清空手写字段
+	        this.searchOption.weightRange.theStartVal="";
+	        this.searchOption.weightRange.theEndVal="";
+	      }
+	      //手动输入
+	      else{
+	        this.searchOption.weightRange.showstr=this.searchOption.weightRange.theStartVal+"-"+this.searchOption.weightRange.theEndVal;
+	        this.searchOption.weightRange.curIndex=-2;
+	      }
+	      this.getGoodsList();
+	    },
 		replacLoadGoodsDate(){
+			this.getGoodsList();
 			this.hideShade();
 		}
 	}

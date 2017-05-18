@@ -9,6 +9,7 @@
     <div class="wh40p height100">
     	<div @click="chosen('2',index)" class="item" :class="item.selected?'selected':'false'" v-for="(item,index) in curPorts">{{item.portName}}</div>
     </div>
+
   </div>
 </template>
 
@@ -26,17 +27,18 @@ export default {
   computed:{
     curProvices(){
       if (this.portlist&&this.portlist.length>0) {
-        return this.portlist;
+        var obj=JSON.parse( JSON.stringify( this.portlist ) );
+        return obj;
       }
     },
     curCitys(){
       if (this.portlist&&this.portlist.length>0) {
-        return this.portlist[this.proviceIndex].citys;
+        return this.curProvices[this.proviceIndex].citys;
       }
     },
     curPorts(){
       if (this.portlist&&this.portlist.length>0) {
-        return this.portlist[this.proviceIndex].citys[this.cityIndex].ports;
+        return this.curProvices[this.proviceIndex].citys[this.cityIndex].ports;
       }
     }
   },
@@ -54,7 +56,6 @@ export default {
           this.curProvices[this.proviceIndex].citys[i].selected=false;
         }
         this.curProvices[index].selected=true;
-
       }
       //选择市
       else if (type==1) {
@@ -75,7 +76,6 @@ export default {
           this.curProvices[this.proviceIndex].citys[this.cityIndex].ports[i].selected=false;
         }
         this.curProvices[this.proviceIndex].citys[this.cityIndex].ports[index].selected=true;
-
         this.$emit("selectportdone",[this.proviceIndex,this.cityIndex,this.portIndex]);
       }
     }
