@@ -91,6 +91,10 @@ a:hover {color:inherit;} a:visited {color:inherit;} a:link {color:inherit;} a {c
 	width: 10%;
 	float: left;
 }
+.wh15p{
+	width: 15%;
+	float: left;
+}
 .wh20p{
 	width: 20%;
 	float: left;
@@ -190,7 +194,7 @@ a:hover {color:inherit;} a:visited {color:inherit;} a:link {color:inherit;} a {c
 	height: 2em;
 	background-color: @grey;
 	border: none;
-	width: 8em;
+	width: 36%;
 	padding-left: 0.5em;
 	.rounded-corners(2px);
 }
@@ -219,11 +223,9 @@ a:hover {color:inherit;} a:visited {color:inherit;} a:link {color:inherit;} a {c
 .blueBackSpan{
 	display: inline-block;
 	.rounded-corners(1.75em);
-	height: 1.5em;
 	color: white;
 	background-color: @blue;
-	padding-top: 0.4em;
-	padding:0.4em 0.5em 0em 0.5em; 
+	padding:0.4em 0.5em 0.4em 0.5em; 
 	text-align: center;
 	vertical-align: middle;
 }
@@ -233,6 +235,29 @@ a:hover {color:inherit;} a:visited {color:inherit;} a:link {color:inherit;} a {c
 	height: 2em;
 	color: white;
 	background-color: @blue;
+	width: 7em;
+	padding-top: 0.7em;
+	text-align: center;
+	vertical-align: middle;
+}
+.orangeBackBtnsm{
+	display: inline-block;
+	.rounded-corners(2px);
+	height: 1.5em;
+	color: white;
+	background-color: @orange;
+	width: 3.5em;
+	padding-top: 0.4em;
+	text-align: center;
+	vertical-align: middle;
+}
+
+.orangeBackBtn{
+	display: inline-block;
+	.rounded-corners(2px);
+	height: 2em;
+	color: white;
+	background-color: @orange;
 	width: 7em;
 	padding-top: 0.7em;
 	text-align: center;
@@ -315,4 +340,8 @@ a:hover {color:inherit;} a:visited {color:inherit;} a:link {color:inherit;} a {c
     height: 1.5em;
   }
 
+}
+
+a[title='站长统计']{
+	display: none;
 }

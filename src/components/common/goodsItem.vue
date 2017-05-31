@@ -1,11 +1,11 @@
 <template>
 	<router-link :to="{ name: 'goodsDetail',params: { goodsInfo: JSON.stringify(item) }}"  tag="div">
-		<div class="shipItem pd10">
+		<div class="goodsItem ">
 			<div class="clearfix ">
 				<div class="clearfix mgt5">
 					<div class="wh33p">
-						<div class="city">{{item.startParentPort}}</div>
-						<div>{{item.startPort}}</div>
+						<div class="city">{{item.startPort}}</div>
+						<!-- <div>{{item.startParentPort}}</div> -->
 					</div>
 					<div class="wh33p textCenter">
 						<div>{{item.goodsName}}</div>
@@ -16,17 +16,19 @@
 					</div>
 					<div class="wh33p textRight">
 						<div class="city">
-							<span>{{item.endParentPort}}</span>
+							<span>{{item.endPort}}</span>
 						</div>
-						<div>{{item.endPort}}</div>
+						<!-- <div>{{item.endParentPort}}</div> -->
 					</div>
 				</div>
 			</div>
 			<div class="bottom clearfix">
 				<span class="date">{{item.loadDate?item.loadDate.substr(5):""}}{{"±"+item.loadAddDay}}</span>
 				<span class="darkerGrey">受载</span>
-				<span class="fr darkerGrey">{{item.dr_unit?"元/天":"元/吨/天"}}{{item.Tax?"含税":"不含税"}}</span>
-				<span class="fr money">{{"¥"+item.price}}</span>
+				<!-- 后期开放 -->
+				<!-- <span class="fr darkerGrey">{{item.dr_unit?"元/天":"元/吨/天"}}{{item.Tax?"含税":"不含税"}}</span>
+				<span class="fr money">{{"¥"+item.price}}</span> -->
+				<span class="fr money">{{"***元"}}</span>
 			</div>
 		</div>
 	</router-link>
@@ -50,8 +52,9 @@ export default {
 
 <style lang="less" scoped>
 @import '../../assets/common.less';
-.shipItem{
+.goodsItem{
 	background-color: white;
+	padding: 0 0.5em;
 	.rounded-corners(2px);
 }
 

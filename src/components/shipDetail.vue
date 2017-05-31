@@ -1,7 +1,7 @@
-<template>
+T<template>
   <div class="shipDetail">
     <div class="header clearfix">
-      <div class="avatar wh25p"><img class="circleImg" :src="imgPath+'/deleteLater.png'"></div>
+      <div class="avatar wh25p"><img class="circleImg" :src="shipInfo.icon?shipInfo.icon:imgPath+'/deleteLater.png'"></div>
       <div class="basicInfo wh50p">
         <div>
           <span class="bigName">{{shipInfo.soName}}</span>
@@ -16,7 +16,7 @@
       <div class="follow wh25p">
         <span class="blueBackSpan" @click="followShip">
           <img class="star" :src="isFollow?imgPath+'/star.png':imgPath+'/unstar.png'">
-          {{isFollow?'已关注':'关注'}}
+          <span>{{isFollow?'已关注':'关注'}}</span>
         </span>
       </div>
     </div>
@@ -25,16 +25,16 @@
       <div class="clearfix pd10">
         <div>
           <div>
-            <span class="darkerGrey">7min前发布</span>
-            <span class="fr date">{{shipInfo.loadDate}}</span>
+            <span class="darkerGrey">{{shipInfo.addDate?shipInfo.addDate.replace("T"," "):"暂无发布时间"}}</span>
+            <span class="fr date">{{shipInfo.loadDate?shipInfo.loadDate.substr(5):""}}</span>
           </div>
           <div class="clearfix mgt5">
             <div class="wh33p">
-              <div class="city">{{shipInfo.startCityName}}</div>
-              <div>{{shipInfo.startPortName}}</div>
+              <div class="city">{{shipInfo.startPortName}}</div>
+              <!-- <div>{{shipInfo.startCityName}}</div> -->
             </div>
             <div class="wh33p textCenter">
-              <div>{{shipInfo.goodsName}}</div>
+              <div>{{shipInfo.goodsName?shipInfo.goodsName:"其他"}}</div>
               <div>
                 <img class="arrowRight" :src="imgPath+'/arrowRight.png'">
               </div>
@@ -42,9 +42,9 @@
             <div class="wh33p textRight">
               <div class="city">
                 <span class="circle">空</span>
-                <span>{{shipInfo.endCityName}}</span>
+                <span>{{shipInfo.endPortName}}</span>
               </div>
-              <div>{{shipInfo.endPortName}}</div>
+              <!-- <div>{{shipInfo. endCityName}}</div> -->
             </div>
           </div>
         </div>
@@ -70,7 +70,14 @@
       </div>
     </div>
     <div class="greySeparate"></div>
-    <div id="mapContainer" v-show="this.shipInfo.longitude&&this.shipInfo.latitude"></div>
+    <div class="mapComponents">
+      
+      <div id="mapContainer"   v-show="this.shipInfo.longitude&&this.shipInfo.latitude"></div>
+      <div class="mapMask" @click="toFullMap">
+      
+      </div>
+    </div>
+    
     <div class="clearfix">
       <div class="wh50p borderLeft mgt10 ">
         <div class="darkerGrey mgl10 ">目前抵达港</div>
@@ -126,17 +133,26 @@
         </div>
       </div>
     </div>
-    <dir class="contact">
+    <div class="contact">
       <!-- <router-link :to="{ name: 'changeLoginStatus', params: { loginInfo: {type:'nomination',to:'gooder'} }}"  tag="div"> -->
-        <span @click="contactShipper" class="linearBtn">
-          <img :src="imgPath+'/tel.png'" class="tel">
-          <span>联系该船东</span>
+        <a :href="'tel:'+telphonenumber" v-if="telphonePanelShow" class="linearBtn">
+          <span>
+            <img :src="imgPath+'/tel.png'" class="tel">
+            <span>联系该船东</span>
+          </span>
+        </a>
+        <span v-else  @click="contactShipper" class="linearBtn">
+            <img :src="imgPath+'/tel.png'" class="tel">
+            <span>联系该船东</span>
+          </span>
         </span>
      <!--  </router-link> -->
-    </dir>
+    </div>
     <div class="greySeparate"></div>
     <div class="placeholder">
-      
+    <!-- <div v-show="telphonePanelShow">
+      <v-telphone-panel :telphonenumber="telphonenumber" @canel="canel"></v-telphone-panel>
+    </div> -->
     </div>
   </div>
 </template>
@@ -144,6 +160,7 @@
 <script>
 import AMap from 'AMap';
 import commonData from '@/components/common/commonData';
+import telphonePanel from '@/components/common/telphonePanel';
 export default {
   name: 'shipDetail',
   data () {
@@ -153,17 +170,24 @@ export default {
       undoLength:"",
       shipInfo:{},
       isFollow:false,
+      telphonenumber:"",
+      telphonePanelShow:false,
     }
+  },
+  components:{
+    "v-telphone-panel":telphonePanel
   },
   activated() {
     window.scrollTo(0,0)
     this.bandData();
     this.getFollowState();
+    this.getPhoneNumber();
   },
   mounted(){
     window.scrollTo(0,0)
     this.bandData();
     this.getFollowState();
+    this.getPhoneNumber();
   },
   methods:{
     bandData(){
@@ -178,21 +202,29 @@ export default {
       this.undoLength= total-(total-ship)*this.shipInfo.stage/100-ship/2;
       if (this.shipInfo.longitude&&this.shipInfo.latitude) {
         var map = new AMap.Map('mapContainer', {
-          resizeEnable: true,
+          resizeEnable: false,
+          dragEnable:false,
           zoom:5,
           center: [this.shipInfo.longitude, this.shipInfo.latitude]
         });
         var info = [];
         var curposition=this.shipInfo.positionText?this.shipInfo.positionText:"暂无"
         info.push("当前所在位置："+curposition);
-        info.push("经度:"+this.shipInfo.longitude);
-        info.push("维度:"+this.shipInfo.latitude);
+        info.push("经度:"+this.shipInfo.longitude.substring(0,8));
+        info.push("纬度:"+this.shipInfo.latitude.substring(0,7));
 
         var infoWindow = new AMap.InfoWindow({
            content: info.join("<br>")  //使用默认信息窗体框样式，显示信息内容
         });
         infoWindow.open(map, [this.shipInfo.longitude,this.shipInfo.latitude]);
+        var marker = new AMap.Marker({
+          position: [this.shipInfo.longitude, this.shipInfo.latitude]
+        });
+        marker.setMap(map);
       }
+    },
+    toFullMap(){
+      this.$router.push({ name: 'fullMap',param:JSON.stringify(this.shipInfo)});
     },
     getFollowState(){
       var postData={shipListId:this.shipInfo.shipListId};
@@ -227,15 +259,29 @@ export default {
         });
       }
     },
+    getPhoneNumber(){
+      var postData={shipId:this.shipInfo.shipId}
+      var _this=this;
+      this.$http.post(commonData.url+'ship/readShipownerMonile',postData)
+      .then(function (response) {
+        if (response.data.RetCode==0) {
+          _this.telphonePanelShow=true;
+          _this.telphonenumber=response.data.RetData.mobilePhone;
+        }
+      });
+    },
     contactShipper(){
       //没登录
       window.localStorage.pageType='nomination';
       window.localStorage.type='gooder';
       window.localStorage.wantToGo=window.location.href;
       if(commonData.checkLoginStatus(this)){
-        //身份是船东
         //发获取电话的请求
+        this.getPhoneNumber();
       }
+    },
+    canel(){
+      this.telphonePanelShow=false;
     }
   }
 }
@@ -355,13 +401,24 @@ export default {
     }
   }
 }
-#mapContainer{
-  height: 12em;
-  width: 100%;
+.mapComponents{
+  position: relative;
+  #mapContainer{
+    height: 12em;
+    width: 100%;
+  }
+  .mapMask{
+    height: 12em;
+    width: 100%;
+    position: absolute;
+    top: 0em;
+  }
 }
 
 .placeholder{
   height: 3.5em;
 }
-
+.telphonePanel{
+  
+}
 </style>

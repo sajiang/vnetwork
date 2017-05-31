@@ -1,5 +1,6 @@
 <script type="text/javascript">
 const url = "http://192.168.0.230:88/api/"
+/*const url = "http://weixin.sspp.co/api/"*/
 function setCookie(name,value) 
 { 
     var Days = 30; 
@@ -7,7 +8,7 @@ function setCookie(name,value)
     exp.setTime(exp.getTime() + Days*24*60*60*1000); 
     document.cookie = name + "="+ escape (value) + ";expires=" + exp.toGMTString(); 
 } 
-function getCookie(name) 
+function getCookie(name)
 { 
     var arr,reg=new RegExp("(^| )"+name+"=([^;]*)(;|$)");
  

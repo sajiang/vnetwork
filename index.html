@@ -4,10 +4,77 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
     <title>vnetwork</title>
+    <style type="text/css">
+    #loading {
+      position: fixed;
+      top: 0em;
+      background: #FFFFFF;
+      z-index: 99999;
+      width: 100%;
+      height: 100%;
+      display: -webkit-box;
+      justify-content: center;
+      -webkit-box-pack: center;
+      align-items: center;
+    }
+   /* #loading  img{
+      width: 7rem;
+      height:7rem;
+      top: 50%;
+      left: 50%;
+      margin-top: -3.6rem;
+      margin-left: -3.3rem;
+      position: absolute;
+    }*/
+    .loader {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      margin-top: -1.1rem;
+      margin-left: -1rem;
+      width:2rem;
+      height:2rem;
+      display:inline-block;
+      padding:0px;
+      border-radius:100%;
+      border:8px solid;
+      border-top-color:#3488C6;
+      border-bottom-color:rgba(0,0,0, 0.1);
+      border-left-color:#3488C6;;
+      border-right-color:rgba(0,0,0, 0.1);
+      -webkit-animation: loader 1s ease-in-out infinite;
+      animation: loader 1s ease-in-out infinite;
+    }
+    @keyframes loader
+    {
+      from {
+        transform: rotate(0deg);
+        -webkit-transform: rotate(0deg);
+      }
+      to {
+        transform: rotate(360deg);
+        -webkit-transform: rotate(360deg);
+      }
+    }
+    </style>
   </head>
   <body>
+    <div id="loading">
+      <!-- <img src="static/img/loading.png"> -->
+      <div class="loader"></div>
+    </div>
     <div id="app"></div>
     <!-- built files will be auto injected -->
     <script type="text/javascript" src="https://webapi.amap.com/maps?v=1.3&key=426a2685e49dc3c526bdcbc2afbb75c8"></script>
+    <script type="text/javascript">
+      window.onload=function () {
+        setTimeout(cancelLoading,1000);
+      }
+      function cancelLoading(){
+        var loadingDiv = document.getElementById("loading");
+        loadingDiv.style.display="none";
+      }
+    </script>
+    <script src="https://s22.cnzz.com/z_stat.php?id=1262039993&web_id=1262039993" language="JavaScript"></script>
   </body>
 </html>

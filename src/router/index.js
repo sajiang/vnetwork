@@ -43,11 +43,15 @@ export default new Router({
       ]
     },
     {path:'/findShip/shipDetail/:shipInfo',name:'shipDetail',component: resolve => require(['@/components/shipDetail'], resolve),},
+    {path:'/findShip/fullMap/:shipInfo',name:'fullMap',component: resolve => require(['@/components/fullMap'], resolve),},
     {path:'/findGoods/goodsDetail/:goodsInfo',name:'goodsDetail',component: resolve => require(['@/components/goodsDetail'], resolve)},
     {path:'/discover/loadPrice',name:'loadPrice',component: resolve => require(['@/components/loadPrice'], resolve)},
+    {path:'/discover/shipFixPosition',name:'shipFixPosition',component: resolve => require(['@/components/shipFixPosition'], resolve)},
     {path:'/changeLoginStatus',name:'changeLoginStatus',component: resolve => require(['@/components/common/changeLoginStatus'], resolve)},
     {path:'/bandPhoneNumber',name:'bandPhoneNumber',component: resolve => require(['@/components/bandPhoneNumber'], resolve)},
     {path:'/dispatch',name:'dispatch',component: resolve => require(['@/components/dispatch'], resolve)},
     {path:'/my/message',name:'message',component: resolve => require(['@/components/message'], resolve)},
+    {path:'/my/myFollowShip',name:'myFollowShip',component: resolve => require(['@/components/myFollowShip'], resolve)},
+    {path:'/my/myFollowGoods',name:'myFollowGoods',component: resolve => require(['@/components/myFollowGoods'], resolve)},
   ]
 })

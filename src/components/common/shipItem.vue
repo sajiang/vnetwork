@@ -1,7 +1,7 @@
 <template>
 	<router-link :to="{ name: 'shipDetail', params: { shipInfo: JSON.stringify(item) }}"  tag="div">
 		<div class="shipItem">
-			<div class="clearfix pd10">
+			<div class="clearfix item pd5">
 				<div class="wh90p">
 					<div>
 						<span class="bigName">{{item.cnShipName}}</span>
@@ -9,25 +9,25 @@
 						<img v-else class="vip" :src="imgPath+'/unvip.png'">
 						<span class="ton">{{item.loadTon}}T</span>
 						<img v-show="item.Recommend" class="recommend" :src="imgPath+'/recommend.png'">
-						<span class="fr date">{{item.loadDate}}</span>
+						<span class="fr date">{{item.loadDate.substring(5)}}</span>
 					</div>
 					<div class="clearfix mgt5">
 						<div class="wh33p">
-							<div class="city">{{item.startCityName}}</div>
-							<div>{{item.startPortName}}</div>
+							<!-- <div class="city">{{item.startCityName}}</div> -->
+							<div class="city">{{item.startPortName}}</div>
 						</div>
 						<div class="wh33p textCenter">
-							<div>{{item.goodsName}}</div>
+							<div>{{item.goodsName?item.goodsName:"其他"}}</div>
 							<div>
 								<img class="arrowRight" :src="imgPath+'/arrowRight.png'">
 							</div>
 						</div>
 						<div class="wh33p textRight">
-							<div class="city">
+							<div>
 								<span class="circle">空</span>
-								<span>{{item.endCityName}}</span>
+								<span class="city">{{item.endPortName}}</span>
 							</div>
-							<div>{{item.endPortName}}</div>
+							<!-- <div>{{item.endCityName}}</div> -->
 						</div>
 					</div>
 				</div>
@@ -76,6 +76,17 @@ export default {
 		this.undoLength= total-(total-ship)*this.item.stage/100-ship/2;
 
 	},
+	watch:{
+		"item.stage":function (argument) {
+			if (this.item.stage<0) {
+			this.item.stage=0;
+			}
+	     	var total=document.getElementsByClassName("progress")[0].offsetWidth;
+			var ship=document.getElementsByClassName("shipIcon")[0].offsetWidth;
+			this.marginLeft= (total-ship)*this.item.stage/100;
+			this.undoLength= total-(total-ship)*this.item.stage/100-ship/2;
+		}
+	},
 	methods:{
 		chosenItem(){
 			this.item.chosen=!this.item.chosen;
@@ -89,6 +100,9 @@ export default {
 .shipItem{
 	background-color: white;
 	.rounded-corners(2px);
+	.item{
+		padding-left: 0.7em;
+	}
 }
 
 .date{
@@ -144,9 +158,10 @@ export default {
 }
 .navigationInfo{
 	.textCenter;
-	margin-top: -0.5em;
+	margin-top: -0.8em;
+	margin-bottom: -0.2em;
 	border-top: 1px #E2E2E2 solid;
-	padding-top: 0.4em;
+	padding-top: 0.3em;
 	font-size: 0.8em;
 }
 .progress{

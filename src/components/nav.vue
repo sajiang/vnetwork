@@ -1,5 +1,5 @@
 <template>
-  <div class="nav clearfix">
+  <div class="nav clearfix boxShadow">
     <router-link to="/findShip" class="wh25p" >
       <div class="textCenter"><span class="findShip"></span></div>
       <div class="navText">找船</div>
@@ -95,5 +95,7 @@ export default {
     color: @blue;
   }
 }
-
+.boxShadow{
+  box-shadow:0px -1px 10px #eee;
+}
 </style>

@@ -21,7 +21,7 @@
 		    	<div class="weightRange pd10" v-show="searchOption.weightRange.show">
 					<div>
 						<div @click="replaceWeightRange(-1)" :class="-1==searchOption.weightRange.curIndex?'blue':''">全部</div>
-						<div class="mgt10" v-for="(range,index) in tonageAreaList" :class="index==searchOption.weightRange.curIndex?'blue':''" @click="replaceWeightRange(index)">{{range.theStartVal}}吨-{{range.theEndVal}}吨</div>
+						<div class="mgt10" v-for="(range,index) in tonageAreaList" :class="index==searchOption.weightRange.curIndex?'blue':''" @click="replaceWeightRange(index)">{{range.theStartVal}}-{{range.theEndVal}}</div>
 					</div>
 					<div class="mgt10">
 						<input class="rangeInput" v-model="searchOption.weightRange.theStartVal" type="number" placeholder="输入最低区间">
@@ -239,7 +239,7 @@ export default {
     	},
     	replacePort1(portInfo){
 			this.hideShade();
-			var replaceStr="全部";
+			var replaceStr="装货港";
 			//港口有值
 			if (portInfo[2]!=0) {
 				replaceStr=this.portList[portInfo[0]].citys[portInfo[1]].ports[portInfo[2]].portName;
@@ -257,13 +257,16 @@ export default {
 				replaceStr=this.portList[portInfo[0]].proviceName;
 				this.searchOption.loadGoodsPort.loadPortId=this.portList[portInfo[0]].proviceId;
 				this.searchOption.loadGoodsPort.loadPortType=2;
-			}
+			}else if(portInfo[2]==0&&portInfo[1]==0&&portInfo[0]==0){
+		        this.searchOption.loadGoodsPort.loadPortId=0;
+		        this.searchOption.loadGoodsPort.loadPortType=2;
+		    }
 			this.searchOption.loadGoodsPort.showstr=replaceStr;
 			this.getGoodsList();
 		},
 		replacePort2(portInfo){
 			this.hideShade();
-			var replaceStr="全部";
+			var replaceStr="卸货港";
 			//港口有值
 			if (portInfo[2]!=0) {
 				replaceStr=this.portList[portInfo[0]].citys[portInfo[1]].ports[portInfo[2]].portName;
@@ -281,7 +284,10 @@ export default {
 				replaceStr=this.portList[portInfo[0]].proviceName;
 				this.searchOption.unloadGoodsPort.loadPortId=this.portList[portInfo[0]].proviceId;
 				this.searchOption.unloadGoodsPort.loadPortType=2;
-			}
+			}else if(portInfo[2]==0&&portInfo[1]==0&&portInfo[0]==0){
+		        this.searchOption.unloadGoodsPort.loadPortId=0;
+		        this.searchOption.unloadGoodsPort.loadPortType=2;
+		    }
 			this.searchOption.unloadGoodsPort.showstr=replaceStr;
 			this.getGoodsList();
 		},

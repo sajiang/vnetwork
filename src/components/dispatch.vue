@@ -21,7 +21,6 @@ export default {
 		this.$http.post(commonData.url+'userInfo/isBindUser', postData)
       	.then(function (response) {
 			if (response.data.RetCode==0) {
-				debugger
 				if(response.data.RetData.isBind==1){
 					//_this.$store.state.isLogin=1;
 					sessionStorage.setItem("isLogin",1);
@@ -33,6 +32,7 @@ export default {
 				}else{
 					_this.$router.push({ name: 'bandPhoneNumber'});
 				}
+				sessionStorage.setItem("openId",response.data.RetData.openId);
 			}
 		});
 	},

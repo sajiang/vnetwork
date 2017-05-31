@@ -60,18 +60,23 @@ export default {
 					userType,
 					msgId:this.msgId,
 					vCode:this.code,
-					code:wxcode
+					openId:sessionStorage.getItem("openId")
 				}
 				var _this=this;
 				this.$http.post(commonData.url+'userInfo/exeBindUser', postData)
 		      	.then(function (response) {
+		      		console.log(response.data.RetCode==0);
 		      		if(response.data.RetCode==0){
 		      			sessionStorage.setItem("isLogin",1);
 		      			//_this.$store.isLogin=1;
+		      			sessionStorage.setItem("company",response.data.RetData.company);
+			      		sessionStorage.setItem("icon",response.data.RetData.icon);
+			      		sessionStorage.setItem("theTrue",response.data.RetData.theTrue);
 		      			sessionStorage.setItem("userId",response.data.RetData.userId);
 		      			sessionStorage.setItem("userInfoName",response.data.RetData.userInfoName);
 		      			sessionStorage.setItem("userType",response.data.RetData.userType);
 		      			window.localStorage.curType=response.data.RetData.userType==1?"shipper":"gooder";
+		      			console.log(_this.$router);
 		      			_this.$router.go(-2);
 		      		}
 				});
@@ -88,6 +93,9 @@ export default {
 		      	.then(function (response) {
 		      		if(response.data.RetCode==0){
 		      			sessionStorage.setItem("isLogin",1);
+		      			sessionStorage.setItem("company",response.data.RetData.company);
+			      		sessionStorage.setItem("icon",response.data.RetData.icon);
+			      		sessionStorage.setItem("theTrue",response.data.RetData.theTrue);
 		      			sessionStorage.setItem("userId",response.data.RetData.userId);
 		      			sessionStorage.setItem("userInfoName",response.data.RetData.userInfoName);
 		      			sessionStorage.setItem("userType",response.data.RetData.userType);
@@ -128,7 +136,7 @@ export default {
 	background-repeat :no-repeat;
 	background-size: 1.1em 1.1em;
 	background-position: 0.4em 0.4em;
-	height: 2.5em;
+	height: 3em;
 	background-color: @grey;
 	border: none;
 	.rounded-corners(2px);
@@ -141,12 +149,13 @@ export default {
 	background-repeat :no-repeat;
 	background-size: 1.1em 1.1em;
 	background-position: 0.4em 0.4em;
-	height: 2.5em;
+	height: 3em;
 	background-color: @grey;
 	border: none;
 	.rounded-corners(2px);
 }
 .blueBorderBtnsm{
+
 	.rounded-corners(1em);
 	display: inline-block;
 	border: 1px @blue solid;
@@ -155,7 +164,7 @@ export default {
 	vertical-align: middle;
 	padding: 0.2em 0.5em;
 	position: absolute;
-	top: 0.4em;
+	top: 0.8em;
 	right: 2.5em;
 }
 .inputwapper{
@@ -167,6 +176,6 @@ export default {
 	.linearToRight(#28d7d5,#3191d8);
 	color: white;
 	width: 90%;
-	padding: 1em;
+	padding:0.5em 1em;
 }
 </style>

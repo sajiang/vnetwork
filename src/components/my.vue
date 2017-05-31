@@ -5,15 +5,14 @@
     	<div class="clearfix header">
     		<div class="wh30p textCenter">
     			<div class="avatar">
-    				<img :src="imgPath+'/deleteLater.png'">
+    				<img :src="icon?icon:imgPath+'/deleteLater.png'">
 	    			<span class="label fontBold">{{type=="gooder"?"货主":"船东"}}</span>
     			</div>
-    			
     		</div>
     		<div class="wh40p">
-    			<div class="name">xxxxx</div>
-    			<div class="mgt5">
-    				<img class=" certification" :src="imgPath+'/certification.png'">
+    			<div class="name">{{userInfoName}} {{company}}</div>
+    			<div class="mgt5" v-if="type=='gooder'">
+    				<img class=" certification" :src="theTrue==2?imgPath+'/certification.png':imgPath+'/uncertification.png'">
     				<img class="IDCard" :src="imgPath+'/unIDCard.png'">
     			</div>
     		</div>
@@ -21,7 +20,7 @@
     			<span class="fr mgt10 switch" @click="switchType">切换身份</span>
     		</div>
     	</div>
-    	<div class="tab"> 
+    	<div class="tab" @click="toMyFollow"> 
     		<img class="icon" :src="imgPath+'/myFollow.png'">
     		<span>我关注的</span>
     		<img class=" fr icon" :src="imgPath+'/smallArrow.png'">
@@ -36,45 +35,90 @@
     	</router-link>
     	<div class="tab"> 
     		<img class="icon" :src="imgPath+'/contact.png'">
-    		<span>联系客服</span>
+    		<span @click="showServiceNumber">联系客服</span>
     		<img class=" fr icon" :src="imgPath+'/smallArrow.png'">
     	</div>
     </div>
+    <div v-show="telphonePanelShow" class="telphonePanel">
+        <v-telphone-panel telphonenumber="4001151356" @canel="canel"></v-telphone-panel>
+     </div>
   </div>
 </template>
 
 <script>
-import commonData from '@/components/common/commonData'
+import commonData from '@/components/common/commonData';
+import telphonePanel from '@/components/common/telphonePanel';
 export default {
   name: 'my',
   data () {
     return {
       imgPath:"../../static/img",
       type:"",
+      company:"",
+      icon:"",
+      theTrue:"",
+      userId:"",
+      userInfoName:"",
+      userType:"",
+      telphonePanelShow:false,
     }
+  },
+  components: {
+    "v-telphone-panel":telphonePanel
   },
   created(){
   	this.type=window.localStorage.curType;
+  	this.bindInfo();
   },
   activated(){
   	this.type=window.localStorage.curType;
+  	this.bindInfo();
   },
   methods:{
   	switchType(){
   		var _this=this;
-		this.$http.post(commonData.url+'/userInfo/switchIdentity')
-      	.then(function (response) {
-			if (response.data.RetCode==0) {
-				//_this.$store.state.isLogin=1;
-				sessionStorage.setItem("isLogin",1);
-				sessionStorage.setItem("userId",response.data.RetData.userId);
-	      		sessionStorage.setItem("userInfoName",response.data.RetData.userInfoName);
-	      		sessionStorage.setItem("userType",response.data.RetData.userType);
-	      		window.localStorage.curType=response.data.RetData.userType==1?"shipper":"gooder";
-	      		_this.type=window.localStorage.curType;
-			}
-		});
-  	}
+  		this.$http.post(commonData.url+'/userInfo/switchIdentity')
+        	.then(function (response) {
+  			if (response.data.RetCode==0) {
+  				//_this.$store.state.isLogin=1;
+          sessionStorage.setItem("isLogin",1);
+          sessionStorage.setItem("company",response.data.RetData.company);
+          sessionStorage.setItem("icon",response.data.RetData.icon);
+          sessionStorage.setItem("theTrue",response.data.RetData.theTrue);
+          sessionStorage.setItem("userId",response.data.RetData.userId);
+          sessionStorage.setItem("userInfoName",response.data.RetData.userInfoName);
+          sessionStorage.setItem("userType",response.data.RetData.userType);
+          window.localStorage.curType=response.data.RetData.userType==1?"shipper":"gooder";
+          _this.type=window.localStorage.curType;
+          _this.company=response.data.RetData.company;
+          _this.icon=response.data.RetData.icon;
+          _this.theTrue=response.data.RetData.theTrue;
+          _this.userId=response.data.RetData.userId;
+          _this.userInfoName=response.data.RetData.userInfoName;
+  			}
+  		});
+  	},
+  	toMyFollow(){
+  		if(this.type=="gooder"){
+  			this.$router.push('/my/myFollowShip');
+  		}else{
+  			this.$router.push('/my/myFollowGoods');
+  		}
+  	},
+  	bindInfo(){
+  		this.company=sessionStorage.getItem("company");
+  		this.icon=sessionStorage.getItem("icon");
+  		this.theTrue=sessionStorage.getItem("theTrue");
+  		this.userId=sessionStorage.getItem("userId");
+  		this.userInfoName=sessionStorage.getItem("userInfoName");
+  		this.userType=sessionStorage.getItem("userType");
+  	},
+  	showServiceNumber(){
+  		this.telphonePanelShow=true;
+  	},
+  	canel(){
+      this.telphonePanelShow=false;
+    }
   }
 }
 </script>
@@ -103,6 +147,9 @@ export default {
 				padding-top: 0.1em;
 				.textCenter;
 				.linearToRight(#ED7856,#CDB555);
+			}img{
+				width: 5em;
+				height: 5em;
 			}
 		}
 		.name{

@@ -5,51 +5,51 @@
         <span class="searchInput"  @click="showKeywordSearchPage()">搜索港口/船舶</span>
         <!-- <span class="blueBorderBtn fr">发布货盘</span> -->
       </div>
-      <div class="clearfix">
+      <div class="clearfix boxShadow">
         <div @click="showSearchOption('seaArea')" class="wh25p textCenter">
-          <span :class="searchOption.seaArea.show?'blue':'fontGrey'">{{searchOption.seaArea.showstr}}</span>
+          <span :class="searchOption.seaArea.show||searchOption.seaArea.showstr!=='海域'?'orange':'fontGrey'">{{searchOption.seaArea.showstr}}</span>
           <img class="arrow" :src="searchOption.seaArea.show?imgPath+'/arrowUp.png':imgPath+'/arrowDown.png'">
         </div>
         <div @click="showSearchOption('emptyShipPort')" class="wh25p textCenter">
-          <span :class="searchOption.emptyShipPort.show?'blue':'fontGrey'">{{searchOption.emptyShipPort.showstr}}</span>
+          <span :class="searchOption.emptyShipPort.show||(searchOption.emptyShipPort.showstr!=='空船港口'&&searchOption.emptyShipPort.showstr!=='全部')?'orange':'fontGrey'">{{searchOption.emptyShipPort.showstr}}</span>
           <img class="arrow" :src="searchOption.emptyShipPort.show?imgPath+'/arrowUp.png':imgPath+'/arrowDown.png'">
         </div>
         <div @click="showSearchOption('weightRange')" class="wh25p textCenter">
-          <span :class="searchOption.weightRange.show?'blue':'fontGrey'">{{searchOption.weightRange.showstr}}</span>
+          <span :class="searchOption.weightRange.show||searchOption.weightRange.showstr!='吨位区间'?'orange':'fontGrey'">{{searchOption.weightRange.showstr}}</span>
           <img class="arrow" :src="searchOption.weightRange.show?imgPath+'/arrowUp.png':imgPath+'/arrowDown.png'">
         </div>
         <div @click="showSearchOption('emptyShipDate')" class="wh25p textCenter">
-          <span :class="searchOption.emptyShipDate.show?'blue':'fontGrey'">{{searchOption.emptyShipDate.showstr}}</span>
+          <span :class="searchOption.emptyShipDate.show||(searchOption.emptyShipDate.startDate&&searchOption.emptyShipDate.endDate)?'orange':'fontGrey'">{{searchOption.emptyShipDate.showstr}}</span>
           <img class="arrow" :src="searchOption.emptyShipDate.show?imgPath+'/arrowUp.png':imgPath+'/arrowDown.png'">
         </div>
       </div>
-      <div class="searchOption">
-        <div class="seaArea" v-show="searchOption.seaArea.show">
-          <div class="wh33p textCenter mgt10" v-for="(seaArea,index) in seaAreaList"><span :class="index==searchOption.seaArea.curIndex?'blueBackBtn':'greyBackBtn'" @click="replaceSeaArea(index)">{{seaArea.SeaareaName}}</span></div>
+      <div class="searchOption ">
+        <div class="seaArea clearfix" v-show="searchOption.seaArea.show">
+          <div class="wh33p textCenter mgt10" v-for="(seaArea,index) in seaAreaList"><span :class="index==searchOption.seaArea.curIndex?'orangeBackBtn':'greyBackBtn'" @click="replaceSeaArea(index)">{{seaArea.SeaareaName}}</span></div>
         </div>
 
         <div class="weightRange pd10" v-show="searchOption.weightRange.show">
           <div>
-            <div @click="replaceWeightRange(-1)" :class="-1==searchOption.weightRange.curIndex?'blue':''">全部</div>
-            <div class="mgt10" v-for="(range,index) in tonageAreaList" :class="index==searchOption.weightRange.curIndex?'blue':''" @click="replaceWeightRange(index)">{{range.theStartVal}}吨-{{range.theEndVal}}吨</div>
+            <div @click="replaceWeightRange(-1)" :class="-1==searchOption.weightRange.curIndex?'orange':''">不限</div>
+            <div class="mgt10" v-for="(range,index) in tonageAreaList" :class="index==searchOption.weightRange.curIndex?'orange':''" @click="replaceWeightRange(index)">{{range.theStartVal}}-{{range.theEndVal}}</div>
           </div>
           <div class="mgt10">
             <input class="rangeInput" v-model="searchOption.weightRange.theStartVal" type="number" placeholder="输入最低区间">
             <span class="fontGrey">-</span>
             <input class="rangeInput" v-model="searchOption.weightRange.theEndVal" type="number" placeholder="输入最高区间">
-            <span class="blueBackBtnsm fr" @click="replaceWeightRange()">确定</span>
+            <span class="orangeBackBtnsm fr" @click="replaceWeightRange()">确定</span>
           </div>
         </div>
         <div class="emptyShipDate pd10" v-show="searchOption.emptyShipDate.show">
           <input class="rangeInput" v-model="searchOption.emptyShipDate.startDate"  type="date" placeholder="选择时间">
           <span class="fontGrey">-</span>
           <input class="rangeInput" v-model="searchOption.emptyShipDate.endDate" type="date" placeholder="选择时间">
-          <span class="blueBackBtnsm fr" @click="replacEmptyShipDate">确定</span>
+          <span class="orangeBackBtnsm fr" @click="replacEmptyShipDate">确定</span>
         </div>
       </div>
     </div>
 
-    <div class="shipList pd5 mgt50 mgb30" @touchmove="lazyLoading($event)">
+    <div class="shipList pd5 mgt50  mgb30" @touchmove="lazyLoading($event)">
       <div v-for="(item,index) in shipList" class="mgt5">
         <v-ship-item :item="item"></v-ship-item>
       </div>
@@ -65,29 +65,22 @@
     </div> -->
     <div class="keywordSearch" v-show="isShowKeywordSearch">
       <div class="header">
-        <input type="text" v-model="keyword" @input="getShipList(1)"  class="searchInput" placeholder="船舶搜索">
-        <span class="cross">x</span>
+        <input type="text" v-model="keyword" class="searchInput" placeholder="船舶搜索">
+        <span class="cross" @click="keyword=''">x</span>
+        <span class="orangeBackBtnsm" @click="recordAndSearch">确定</span>
         <span class="cancel" @click="hideKeywordSearchPage">取消</span>
       </div>
       <div class="body">
-        <div>
+        <div v-if="historyRecord.length>0">
           <div class="title">历史搜索</div>
           <div>
-            <span class="greyBackBtnsm">海口xx港口</span>
-            <span class="greyBackBtnsm">海口xx港口</span>
-            <span class="greyBackBtnsm">上海xxxxxx港口</span>
-            <span class="greyBackBtnsm">海口xx港口</span>
-            <span class="greyBackBtnsm">海口xx港口</span>
+            <span class="greyBackBtnsm" v-for="item in historyRecord" @click="quickSearch(item)">{{item}}</span>
           </div>
         </div>
         <div>
           <div class="title">热门搜索</div>
           <div>
-            <span class="greyBackBtnsm">xx港口</span>
-            <span class="greyBackBtnsm">xxxx港口</span>
-            <span class="greyBackBtnsm">xx港口</span>
-            <span class="greyBackBtnsm">xx港口</span>
-            <span class="greyBackBtnsm">xx港口</span>
+            <span class="greyBackBtnsm" v-for="item in hotSearch" @click="quickSearch(item.portName)">{{item.portName}}</span>
           </div>
         </div>
       </div>
@@ -143,7 +136,9 @@ export default {
       portList:[],
       seaAreaList:[],
       tonageAreaList:[],
-      shipList:[]
+      shipList:[],
+      historyRecord:[],
+      hotSearch:[]
     }
   },
   components: {
@@ -152,6 +147,9 @@ export default {
     'v-ship-item':shipItem
   },
   created(){
+    if (window.localStorage.historyRecord) {
+      this.historyRecord=window.localStorage.historyRecord.split(",");
+    }
     var _this=this;
     this.$http.get(commonData.url+'Common/readSearchInfo')
     .then(function (response) {
@@ -186,6 +184,7 @@ export default {
       console.log(error);
     });
     this.getShipList(1);
+    this.getHotSearch();
   },
   computed:{
     count:function (argument) {
@@ -218,6 +217,55 @@ export default {
         }
         this.lazyLoadingCount=0
       }
+    },
+    getHotSearch(){
+      var _this=this;
+      this.$http.get(commonData.url+'Common/readHotPort')
+      .then(function (response) {
+        _this.hotSearch=response.data.RetData;
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+    },
+    recordAndSearch(){
+      this.getShipList(1);
+      this.hideKeywordSearchPage();
+      if (window.localStorage.historyRecord) {
+        //搜索的值在历史记录中有出现
+        if (window.localStorage.historyRecord.indexOf(this.keyword)>-1) {
+          //排在第一
+          var historyRecord=window.localStorage.historyRecord.split(",");
+          var index=historyRecord.indexOf(this.keyword);
+          historyRecord.splice(index,1);
+          historyRecord.unshift(this.keyword);
+          window.localStorage.historyRecord=historyRecord.join(",");
+        }else{
+          var historyRecord=window.localStorage.historyRecord.split(",");
+          if (historyRecord.length<10) {
+            window.localStorage.historyRecord=this.keyword+','+window.localStorage.historyRecord;
+          }else{
+            window.localStorage.historyRecord=this.keyword+','+window.localStorage.historyRecord;
+            historyRecord=window.localStorage.historyRecord.split(",");
+            historyRecord.splice(-1,1);
+            window.localStorage.historyRecord=historyRecord.join(",");
+          }
+        }
+      }else{
+        window.localStorage.historyRecord=this.keyword;
+      }
+      this.historyRecord=window.localStorage.historyRecord.split(",");
+    },
+    quickSearch(item){
+      this.keyword=item;
+      this.getShipList(1);
+      this.hideKeywordSearchPage();
+      var historyRecord=window.localStorage.historyRecord.split(",");
+      var index=historyRecord.indexOf(this.keyword);
+      historyRecord.splice(index,1);
+      historyRecord.unshift(this.keyword);
+      window.localStorage.historyRecord=historyRecord.join(",");
+      this.historyRecord=window.localStorage.historyRecord.split(",");
     },
     getShipList(requestType,pageIndex){
       this.curRequestType=requestType;
@@ -302,6 +350,7 @@ export default {
     },
     showKeywordSearchPage() {
       this.isShowKeywordSearch=true;
+      this.keyword="";
     },
     hideKeywordSearchPage(){
       this.isShowKeywordSearch=false;
@@ -332,14 +381,22 @@ export default {
         replaceStr=this.portList[portInfo[0]].proviceName;
         this.searchOption.emptyShipPort.loadPortId=this.portList[portInfo[0]].proviceId;
         this.searchOption.emptyShipPort.loadPortType=2;
+      }else if(portInfo[2]==0&&portInfo[1]==0&&portInfo[0]==0){
+        this.searchOption.emptyShipPort.loadPortId=0;
+        this.searchOption.emptyShipPort.loadPortType=2;
       }
       this.searchOption.emptyShipPort.showstr=replaceStr;
       this.getShipList(2);
     },
     replaceSeaArea(index){
       this.hideShade();
-      this.searchOption.seaArea.showstr=this.seaAreaList[index].SeaareaName;
-      this.searchOption.seaArea.curIndex=index;
+      if (index!=this.searchOption.seaArea.curIndex) {
+        this.searchOption.seaArea.showstr=this.seaAreaList[index].SeaareaName;
+        this.searchOption.seaArea.curIndex=index;
+      }else{
+        this.searchOption.seaArea.showstr="海域";
+        this.searchOption.seaArea.curIndex=-1;
+      }
       this.getShipList(2);
     },
     replaceWeightRange(index){
@@ -348,7 +405,7 @@ export default {
         if(index>-1){
           this.searchOption.weightRange.showstr=this.tonageAreaList[index].theStartVal+"-"+this.tonageAreaList[index].theEndVal;
         }else{
-          this.searchOption.weightRange.showstr="全部";
+          this.searchOption.weightRange.showstr="吨位区间";
         }
         this.searchOption.weightRange.curIndex=index;
         //清空手写字段
@@ -447,14 +504,15 @@ export default {
     background-color: white;
     padding:0.5em 1em;
     .searchInput{
-      width: 70%;
+      width: 60%;
       height: 100%;
       font-size: 1em;
       line-height: 2em;
     }
     .cross{
-      position: relative;
-      left: -2em;
+      position: absolute;
+      left: 60%;
+      top: 1em;
     }
     .cancel{
       font-size: 1.1em;
@@ -473,4 +531,8 @@ export default {
     }
   }
 }
+.boxShadow{
+  box-shadow:0px 1px 10px #eee;
+}
+
 </style>

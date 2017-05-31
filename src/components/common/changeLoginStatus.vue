@@ -18,17 +18,17 @@
 			</div>
 		</div>
 		<div class="choose clearfix textCenter" v-else-if="loginInfo.pageType=='choose'">
-			<div class="inlineBlock">
+			<div class="inlineBlock imgWapper">
 				<div>
 					<img :class="gooderBig?'bigAvatar':'avatar'" :src="gooderBig?imgPath+'/gooder.png':imgPath+'/ungooder.png'" @click="changeType('gooder')">
 				</div>
-				<div class="good">货主</div>
+				<div :class="gooderBig?'good':''"  class="type">货主</div>
 			</div>
-			<div class="inlineBlock">
+			<div class="inlineBlock imgWapper">
 				<div>
 					<img :class="shipperBig?'bigAvatar':'avatar'" :src="shipperBig?imgPath+'/shipper.png':imgPath+'/unshipper.png'" @click="changeType('shipper')">
 				</div>
-				<div class="ship">船东</div>
+				<div :class="shipperBig?'ship':''" class="type">船东</div>
 			</div>
 		</div>
 		<div class="login" @click="bandPhoneNumber">
@@ -82,9 +82,13 @@ export default {
 					if (response.data.RetCode==0) {
 						//_this.$store.state.isLogin=1;
 						sessionStorage.setItem("isLogin",1);
+						sessionStorage.setItem("company",response.data.RetData.company);
+			      		sessionStorage.setItem("icon",response.data.RetData.icon);
+			      		sessionStorage.setItem("theTrue",response.data.RetData.theTrue);
 						sessionStorage.setItem("userId",response.data.RetData.userId);
 			      		sessionStorage.setItem("userInfoName",response.data.RetData.userInfoName);
 			      		sessionStorage.setItem("userType",response.data.RetData.userType);
+
 			      		window.localStorage.curType=response.data.RetData.userType==1?"shipper":"gooder";
 						//window.location.href=window.localStorage.wantToGo;
 						_this.$router.go(-1);						
@@ -95,7 +99,7 @@ export default {
 				var ua = navigator.userAgent.toLowerCase();  
     			//没登录并且是微信浏览器则跳授权页
 				if(ua.match(/MicroMessenger/i)=="micromessenger") {  
-				  	window.location.href="https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx318ae0637e725068&redirect_uri=http%3a%2f%2fwww.92lvyou.net%2findex.html%23%2fdispatch&response_type=code&scope=snsapi_userinfo&state=123#wechat_redirect";
+				  	window.location.href="https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx318ae0637e725068&redirect_uri=http%3a%2f%2fweixin.sspp.co%2findex.html%23%2fdispatch&response_type=code&scope=snsapi_userinfo&state=123#wechat_redirect";
 				}else
 				{  //没登录并且是普通浏览器跳绑定登录页面
 			      	this.$router.push({ name: 'bandPhoneNumber'});
@@ -122,6 +126,7 @@ export default {
 .title{
 	text-align: center;
 	margin-top: 5em;
+	margin-bottom: 3em;
 	font-size: 1.2em;
 }
 .nomination{
@@ -140,9 +145,9 @@ export default {
 	color: @gooderColor;
 }
 .ship{
-	margin-top: 1em;
 	font-weight: bolder;
 	color: @shipperColor;
+
 }
 .login{
 	text-align: center;
@@ -152,11 +157,25 @@ export default {
 	}
 }
 .bigAvatar{
-	width: 10em;
-	height: 10em;
+	width: 7em;
+	height: 7em;
 }
 .avatar{
-	width: 8em;
-	height: 8em;
+	margin-top: 1em;
+	width: 5em;
+	height: 5em;
 }
+
+.imgWapper{
+	vertical-align: middle;
+	margin: 0em 1em;
+	position: relative;
+	height: 10em;
+}
+.type{
+    position: absolute;
+    bottom: 0em;
+    left: 30%;
+}
+
 </style>

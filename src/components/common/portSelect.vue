@@ -102,6 +102,6 @@ export default {
 	margin-top: 1.3em;
 }
 .selected{
-	color:@blue !important;
+	color:@orange !important;
 }
 </style>

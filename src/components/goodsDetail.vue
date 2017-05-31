@@ -2,7 +2,7 @@
   	<div class="goodsDetail">
 	   
 	    <div class="header clearfix">
-	      	<div class="avatar wh25p"><img class="circleImg" :src="imgPath+'/deleteLater.png'"></div>
+	      	<div class="avatar wh25p"><img class="circleImg" :src="goodsInfo.icon?goodsInfo.icon:imgPath+'/deleteLater.png'"></div>
 	      	<div class="basicInfo wh50p">
 	        	<div>
 	          		<span class="bigName">{{goodsInfo.goName}}</span>
@@ -21,7 +21,7 @@
 	    <div class="greySeparate"></div>
 	    <div class="borderBottom darkerGrey pd10 mgl10 mgr10">
 	    	<span>发布于</span>
-	    	<span>{{goodsInfo.addDate}}</span>
+	    	<span>{{goodsInfo.addDate?goodsInfo.addDate.replace("T"," "):''}}</span>
 	    </div>
 	    <div class="borderBottom mgl10 mgr10">
 	    	<v-goods-item :item="goodsInfo"></v-goods-item>
@@ -45,39 +45,54 @@
 	    		</div>
 	    	</div>
 	    </div>
-	    <dir class="contact">
+	    <div class="contact">
 	        <span @click="contactGooder" class="linearBtn">
-	          	<img :src="imgPath+'/tel.png'" class="tel">
-	          	<span>联系该货主</span>
+	          	<a :href="'tel:'+telphonenumber" v-if="telphonePanelShow">
+                <img :src="imgPath+'/tel.png'" class="tel">
+                <span>联系该货主</span>
+              </a>
+              <span v-else>
+                <img :src="imgPath+'/tel.png'" class="tel">
+                <span>联系该货主</span>
+              </span>
 	        </span>
-	    </dir>
+	    </div>
+      <!-- <div v-show="telphonePanelShow" class="telphonePanel">
+        <v-telphone-panel :telphonenumber="telphonenumber" @canel="canel"></v-telphone-panel>
+      </div> -->
   	</div>
 </template>
 
 <script>
 import goodsItem from '@/components/common/goodsItem'
 import commonData from '@/components/common/commonData'
+import telphonePanel from '@/components/common/telphonePanel';
 export default {
   name: 'goodsDetail',
   data () {
     return {
        imgPath:"../../static/img", 
        goodsInfo:{},
-       isFollow:false
+       isFollow:false,
+       telphonePanelShow:false,
+       telphonenumber:"",
     }
   },
   components: {
-    'v-goods-item':goodsItem
+    'v-goods-item':goodsItem,
+    "v-telphone-panel":telphonePanel
   },
   activated() {
     window.scrollTo(0,0)
     this.bandData();
     this.getFollowState();
+    this.getPhoneNumber();
   },
   mounted(){
     window.scrollTo(0,0)
     this.bandData();
     this.getFollowState();
+    this.getPhoneNumber();
   },
   methods:{
     contactGooder(){
@@ -89,7 +104,19 @@ export default {
       if(commonData.checkLoginStatus(this)){
         //身份是船东
         //发获取电话的请求
+        
       }
+    },
+    getPhoneNumber(){
+      var postData={goodsListId:this.goodsInfo.goodsListId}
+      var _this=this;
+      this.$http.post(commonData.url+'goods/readGoodserMonile',postData)
+      .then(function (response) {
+        if (response.data.RetCode==0) {
+          _this.telphonePanelShow=true;
+          _this.telphonenumber=response.data.RetData.mobilePhone;
+        }
+      });
     },
     bandData(){
       this.goodsInfo=JSON.parse(this.$route.params.goodsInfo);
@@ -126,6 +153,9 @@ export default {
           }
         });
       }
+    },
+    canel(){
+      this.telphonePanelShow=false;
     }
   }
 }

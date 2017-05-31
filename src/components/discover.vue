@@ -2,11 +2,11 @@
   <div class="discover">
     <div class="clearfix">
     	<div class="box mgr10">
-    		<div class="shipFixPosition">
+    		<router-link to="/discover/shipFixPosition" class="shipFixPosition" tag="div">
     			<span class="smallLine"></span>
                 <img class="img" :src="imgPath+'/shipFixImg.png'">
     			<span class="text">船舶定位</span>
-    		</div>
+    		</router-link>
     	</div>
     	<div class="box mgl10">
     		<div class="queryPort">
