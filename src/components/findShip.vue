@@ -209,10 +209,13 @@ export default {
         var scrollHeight=window.pageYOffset;
         var screenHeight=window.screen.availHeight;
         if (totalHeight-scrollHeight-screenHeight-itemHeight<0) {
+          //this.shadeShow=true;
           if(++this.pageIndex<=this.curTotalPage){
             this.getShipList(this.curRequestType,this.pageIndex);
+            //this.shadeShow=false;
           }else{
             alert("没有更多数据啦");
+            //this.shadeShow=false;
           }
         }
         this.lazyLoadingCount=0
@@ -442,7 +445,7 @@ export default {
   .searchInput{
     line-height: 2em;
     color: #909090;
-    width: 60%;
+    width: 90%;
   }
 }
 .headerZ4{
@@ -455,7 +458,7 @@ export default {
   .searchInput{
     line-height: 2em;
     color: #909090;
-    width: 60%;
+    width: 90%;
   }
 }
 

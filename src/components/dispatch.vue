@@ -15,20 +15,21 @@ export default {
 		}
 	},
 	created:function(){
-		var code=this.getUrlParam("code");
-		var postData={code};
+		var code=this.getUrlParam("code");   
+		var userType=window.localStorage.type=="gooder"?2:1;
+		var postData={code,userType};
 		var _this=this;
 		this.$http.post(commonData.url+'userInfo/isBindUser', postData)
       	.then(function (response) {
 			if (response.data.RetCode==0) {
+				console.log("isbind"+response.data.RetData.isBind)
 				if(response.data.RetData.isBind==1){
-					//_this.$store.state.isLogin=1;
 					sessionStorage.setItem("isLogin",1);
+					console.log("userType"+response.data.RetData.userType);
 					sessionStorage.setItem("userId",response.data.RetData.userId);
 		      		sessionStorage.setItem("userInfoName",response.data.RetData.userInfoName);
 		      		sessionStorage.setItem("userType",response.data.RetData.userType);
-					//window.location.href=window.localStorage.wantToGo;
-					_this.$router.go(-2);
+					_this.$router.go(-3);
 				}else{
 					_this.$router.push({ name: 'bandPhoneNumber'});
 				}

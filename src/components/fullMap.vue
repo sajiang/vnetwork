@@ -36,11 +36,13 @@ export default {
 	        info.push("纬度:"+this.shipInfo.latitude.substring(0,7));
 
 	        var infoWindow = new AMap.InfoWindow({
-	           content: info.join("<br>")  //使用默认信息窗体框样式，显示信息内容
+	        	offset: new AMap.Pixel(0, -25),
+	           	content: info.join("<br>")  //使用默认信息窗体框样式，显示信息内容
 	        });
 	        infoWindow.open(map, [this.shipInfo.longitude,this.shipInfo.latitude]);
 	        var marker = new AMap.Marker({
-				position: [this.shipInfo.longitude, this.shipInfo.latitude]
+				position: [this.shipInfo.longitude, this.shipInfo.latitude],
+				icon:this.shipInfo.shipPic
 			});
 			marker.setMap(map);
 		},

@@ -21,7 +21,6 @@ export default {
       };
     if (!doc.addEventListener) return;
     doc.addEventListener('DOMContentLoaded', recalc, false);
-
   }
 }
 </script>

@@ -27,8 +27,11 @@
 				<span class="darkerGrey">受载</span>
 				<!-- 后期开放 -->
 				<!-- <span class="fr darkerGrey">{{item.dr_unit?"元/天":"元/吨/天"}}{{item.Tax?"含税":"不含税"}}</span>
+
 				<span class="fr money">{{"¥"+item.price}}</span> -->
-				<span class="fr money">{{"***元"}}</span>
+				<span class="fr orange">元</span>
+				<span class="fr money">{{"***"}}</span>
+
 			</div>
 		</div>
 	</router-link>

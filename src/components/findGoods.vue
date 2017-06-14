@@ -1,6 +1,6 @@
 <template>
 	<div class="findGoods">
-		<div class="clearfix searchOption" :class="headerZIndex==6?'headerZ6':'headerZ4'">
+		<div class="clearfix searchOption boxShadow" :class="headerZIndex==6?'headerZ6':'headerZ4'">
 	        <div @click="showSearchOption('loadGoodsPort')" class="wh25p textCenter">
 	          	<span :class="searchOption.loadGoodsPort.show?'blue':'fontGrey'">{{searchOption.loadGoodsPort.showstr}}</span>
 	          	<img class="arrow" :src="searchOption.loadGoodsPort.show?imgPath+'/arrowUp.png':imgPath+'/arrowDown.png'">
@@ -359,5 +359,8 @@ export default {
 .goodsList{
 	margin-top: 1.5em;
 	background-color: @grey;
+}
+.boxShadow{
+  box-shadow:0px 1px 10px #eee;
 }
 </style>

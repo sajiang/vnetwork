@@ -3,7 +3,7 @@
 	   
 	    <div class="header clearfix">
 	      	<div class="avatar wh25p"><img class="circleImg" :src="goodsInfo.icon?goodsInfo.icon:imgPath+'/deleteLater.png'"></div>
-	      	<div class="basicInfo wh50p">
+	      	<div class="basicInfo wh40p">
 	        	<div>
 	          		<span class="bigName">{{goodsInfo.goName}}</span>
 	          		<img class="vip" :src="goodsInfo.theTrue?imgPath+'/vip.png':imgPath+'/unvip.png'">
@@ -175,11 +175,14 @@ export default {
   .basicInfo{
     position: relative;
     left: 1em;
+    padding-right: 2em;
   }
   .follow{
     .blueBackSpan{
       margin-top: 1em;
       margin-left: 0em;
+      position: relative;
+      left: 1em;
     }
     .star{
       width: 1.1em;

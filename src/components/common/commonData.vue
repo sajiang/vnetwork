@@ -1,6 +1,6 @@
 <script type="text/javascript">
-const url = "http://192.168.0.230:88/api/"
-/*const url = "http://weixin.sspp.co/api/"*/
+const url = "http://192.168.0.230:88/api/";
+/*const url = "http://weixin.sspp.co/api/";*/
 function setCookie(name,value) 
 { 
     var Days = 30; 
